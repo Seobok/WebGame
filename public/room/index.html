@@ -3,6 +3,7 @@
     <body>
         <ul id="messages" type="none">
             <li id="usercount"></li>
+            <li id="nickname"></li>
         </ul>
 
         <script src="https://cdn.socket.io/4.5.3/socket.io.min.js" integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi" crossorigin="anonymous"></script>
@@ -20,7 +21,12 @@
 
             socket.on('userCount', (count) => {
                 var userCounter = document.getElementById('usercount');
-                userCounter.innerText = "현재 " + count + "명이 서버에 접속해있습니다.";
+                userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
+            })
+
+            socket.on('userNick', (nickname) => {
+                var userNickname = document.getElementById('nickname');
+                userNickname.innerHTML = "현재 당신의 닉네임 : " + nickname;
             })
         </script>
     </body>

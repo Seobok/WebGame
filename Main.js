@@ -1,6 +1,6 @@
 const express = require('express')
 
-function generateSerial() {
+function generateSerial() { //방 시리얼 넘버 생성
     var chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
         serialLength = 10,
         randomSerial = "",
@@ -16,6 +16,21 @@ function generateSerial() {
     }
 
     return randomSerial;
+}
+
+function generateUserNickname(){
+    var adjective = ['번듯한', '멋진', '화려한', '우울한', '슬픈', '기쁜', '힘든', '포기하고 싶은'],
+    noun = ['호랑이', '사자', '인간', '쥐', '나무늘보', '너구리', '바위', '박명수', '토끼'],
+    randomName="",
+    randomNumber;
+
+    randomNumber = Math.floor(Math.random() * adjective.length);
+    randomName += adjective[randomNumber];
+    randomName += " ";
+    randomNumber = Math.floor(Math.random() * noun.length);
+    randomName += noun[randomNumber];
+
+    return randomName;
 }
 
 const app = express();
@@ -38,12 +53,13 @@ server.listen(52273);
 
 io.on('connection', (socket) => {
     const roomId = socket.handshake.query.roomId
+    const userId = socket.id
 
     socket.join(roomId)
 
+    io.to(userId).emit('userNick', generateUserNickname())
+    
     socket.on('roomMemberList', (roomId) => {
         io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size)
-    
-        console.log(io.of('/').adapter.rooms.get(roomId).size)
     })
 })
