@@ -72,6 +72,7 @@ io.on('connection', (socket) => {
 
     socket.on('disconnect', () => {
         addNick.get(roomId).splice(addNick.get(roomId).indexOf(addNickname), 1)
-        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId))
+        if(io.of('/').adapter.rooms.has(roomId))
+            io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId))
     })
 })
