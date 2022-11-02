@@ -51,15 +51,19 @@ app.listen(80, () => {});
 
 server.listen(52273);
 
-io.on('connection', (socket) => {
-    const roomId = socket.handshake.query.roomId
-    const userId = socket.id
+io.on('connection', (socket) => {                                               //접속할때마다 실행
+    const roomId = socket.handshake.query.roomId                                    //접속한 주소의 방ID
+    const userId = socket.id                                                        //신호를 보낸 user의id
+
+    socket.userNickname = generateUserNickname();                                   //userNickname property추가
 
     socket.join(roomId)
 
-    io.to(userId).emit('userNick', generateUserNickname())
+    io.to(userId).emit('userNick', socket.userNickname)                         //닉네임을 넘겨줌
     
-    socket.on('roomMemberList', (roomId) => {
-        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size)
+    socket.on('roomMemberList', (roomId) => {                                   //
+        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size)  //roomMember의 수를 넘겨줌
+
+        io.to(roomId).emit('userList' , io.of('/').adapter.rooms.get(roomId))
     })
 })
