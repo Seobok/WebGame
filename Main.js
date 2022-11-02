@@ -51,15 +51,23 @@ app.listen(80, () => {});
 
 server.listen(52273);
 
+var addNick = [];
+
 io.on('connection', (socket) => {
     const roomId = socket.handshake.query.roomId
     const userId = socket.id
 
     socket.join(roomId)
 
-    io.to(userId).emit('userNick', generateUserNickname())
+    io.to(userId).emit('userNick', addNickname = generateUserNickname())
+
+    addNick.push(addNickname)
     
     socket.on('roomMemberList', (roomId) => {
+        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick)
+    })
+
+    socket.on('disconnect', () => {
         io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size)
     })
 })
