@@ -25,9 +25,8 @@
                 var userList = document.getElementById('userlist');
                 var output='';
                 userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
-                for(let i=0; i < nick.length; i++)
-                {
-                    output += nick[i] + '<br>'
+                for(let item of nick) {
+                    output += item + '<br>'
                 }
                 userList.innerHTML = output
             })

@@ -51,7 +51,7 @@ app.listen(80, () => {});
 
 server.listen(52273);
 
-var addNick = [];
+var addNick = new Map();
 
 io.on('connection', (socket) => {
     const roomId = socket.handshake.query.roomId
@@ -61,14 +61,17 @@ io.on('connection', (socket) => {
 
     io.to(userId).emit('userNick', addNickname = generateUserNickname())
 
-    addNick.push(addNickname)
+    if(!addNick.has(roomId)) {
+        addNick.set(roomId, new Array());
+    }
+    addNick.get(roomId).push(addNickname)
     
     socket.on('roomMemberList', (roomId) => {
-        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick)
+        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId))
     })
 
     socket.on('disconnect', () => {
-        addNick.splice(addNick.indexOf(addNickname), 1)
-        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick)
+        addNick.get(roomId).splice(addNick.get(roomId).indexOf(addNickname), 1)
+        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId))
     })
 })
