@@ -6,6 +6,7 @@
             <li id="nickname"></li>
             <li id="userlist"></li>
             <li id="roommaster"></li>
+            <li id="gamestartbtn"></li>
         </ul>
 
         <script src="https://cdn.socket.io/4.5.3/socket.io.min.js" integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi" crossorigin="anonymous"></script>
@@ -42,8 +43,16 @@
                 if(this.nickname == name)
                     roomMaster = true;
                 var chkroomMaster = document.getElementById('roommaster');
-                console.log(roomMaster)
                 chkroomMaster.innerHTML = "방장? : " + roomMaster;
+
+                if(roomMaster) {
+                    var gamestartbtn = document.getElementById('gamestartbtn');
+                    gamestartbtn.innerHTML = "<button id = 'start'>게임시작</button>"
+                    var btn = document.getElementById('start')
+                    btn.onclick = function() {
+                        console.log("gameStart");
+                    }
+                }
             })
         </script>
     </body>
