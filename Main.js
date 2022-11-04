@@ -77,14 +77,22 @@ io.on('connection', (socket) => {       //접속시
         io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId)) //userCount형태로 usercount와 nicknameArray를 제공 / 이후 분리가 필요해 보임
     })
 
+    socket.on('gameStart', () => {                                              //방장이 게임시작 버튼을 누르면
+        io.to(roomId).emit('setBrowser')                                        //브라우저 설정 이벤트 호출
+    })
+
+    socket.on('line', (data) => {
+        //io.to(roomId).emit('line', data)
+    })
+
     socket.on('disconnect', () => {                                             //접속이 종료될 때
         addNick.get(roomId).splice(addNick.get(roomId).indexOf(socket.nickname), 1)     //addNick Map에서 해당 유저 nickName 제거
         if(io.of('/').adapter.rooms.has(roomId)) {                                        //roomId가 존재하면 (남은 사람이 존재하여 방이 유지되면)
             io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId));    //남은 usercount와 nicknameArray를 제공
             io.to(roomId).emit('findRoomMaster', addNick.get(roomId)[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공
         }
-        else                                                                            //남은 사람이 존재하지 않는다면
+        else {                                                                          //남은 사람이 존재하지 않는다면
             addNick.delete(roomId)                                                      //roomId 제거
-        
+        }
     })
 })

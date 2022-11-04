@@ -1,59 +1,175 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <script src="https://cdn.socket.io/4.5.3/socket.io.min.js" integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi" crossorigin="anonymous"></script>
+        <script>
+            window.onload = function() {
+                //<!-- 서버 관련 함수 -->
+                params = (new URL(document.location)).searchParams
+                id = params.get('roomId')
+                
+                socket = io('localhost:52273',{
+                    query: {
+                        roomId : id
+                    }
+                });
+
+                //<!-- 그림판 관련 변수 및 함수 선언 -->
+                var canvas, context;
+                var draw_color, draw_width, is_drawing;
+                var restore_array, index;
+                var oldPointX, oldPointY,  newPointX, newPointY;
+
+                function start(event) {
+                    is_drawing = true;
+                    context.beginPath();
+                    oldPointX = event.clientX - canvas.offsetLeft;
+                    oldPointY = event.clientY - canvas.offsetTop;
+                    context.moveTo(oldPointX, oldPointY);
+
+                    event.preventDefault();
+
+                    if(event.type != 'mouseout') {
+                        restore_array.push(context.getImageData(0,0,canvas.width, canvas.height));
+                        index  += 1;
+                    }
+                }
+
+                function draw(event) {
+                    if(is_drawing){
+                        newPointX = event.clientX - canvas.offsetLeft
+                        newPointY = event.clientY - canvas.offsetTop;
+                        context.lineTo(newPointX, newPointY);
+                        context.strokeStyle = draw_color;
+                        context.lineWidth = draw_width;
+                        context.lineCap = "round";
+                        context.lineJoin = "round";
+                        context.stroke();
+
+                        socket.emit('line', {
+                            x1 : oldPointX,
+                            y1 : oldPointY,
+                            x2 : newPointX,
+                            y2 : newPointY,
+                            color : draw_color,
+                            width : draw_width
+                        })
+                    }
+                }
+
+                function stop(event) {
+                    if(is_drawing) {
+                        context.stroke();
+                        context.closePath();
+                        is_drawing=false;
+                    }
+                    event.preventDefault();
+                }
+
+                function clear_canvas() {
+                    context.fillStyle = 'whitesmoke';
+                    context.clearRect(0,0,canvas.width, canvas.height);
+                    context.fillRect(0,0,canvas.width, canvas.height);
+
+                    restore_array = [];
+                    index=-1;
+                }
+
+                function undo_last() {
+                    if(index<=0) {
+                        clear_canvas();
+                    } else {
+                        index -= 1;
+                        restore_array.pop();
+                        context.putImageData(restore_array[index],0,0);
+                    }
+                }
+                //<!-- 여기 까지 -->
+
+                socket.emit('roomMemberList', id)
+
+                socket.on('userCount', (count, nick) => {
+                    var userCounter = document.getElementById('usercount');
+                    var userList = document.getElementById('userlist');
+                    var output='';
+                    userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
+                    for(let item of nick) {
+                        output += item + '<br>'
+                    }
+                    userList.innerHTML = output
+                })
+
+                socket.on('userNick', (nickname) => {
+                    this.nickname = nickname
+                    var userNickname = document.getElementById('nickname');
+                    userNickname.innerHTML = "현재 당신의 닉네임 : " + this.nickname;
+                })
+
+                socket.on('findRoomMaster', (name) => {
+                    if(this.nickname == name)
+                        roomMaster = true;
+                    var chkroomMaster = document.getElementById('roommaster');
+                    chkroomMaster.innerHTML = "방장? : " + roomMaster;
+
+                    if(roomMaster) {
+                        var gamestartbtntext = document.getElementById('gamestartbtn');
+                        gamestartbtntext.innerHTML = "<button id='startbtn'>게임시작</button>"
+
+                        var startbtn = document.getElementById('startbtn')
+                        startbtn.onclick = function() {
+                            socket.emit('gameStart')
+                            console.log("test")
+                        }
+                    }
+                })
+
+                socket.on('setBrowser', () => {
+                    document.body.innerHTML="<canvas id = 'canvas'></canvas>"
+                    canvas = document.getElementById('canvas')
+                    canvas.width = 800
+                    canvas.height = 600
+
+                    context = canvas.getContext('2d')
+                    context.fillStyle = 'whitesmoke'
+                    context.fillRect(window.width/2-400,window.height/2-300,canvas.width,canvas.height);
+
+                    draw_color="black";
+                    draw_width = "2";
+                    is_drawing = false;
+
+                    restore_array = [];
+                    index = -1;
+
+                    canvas.addEventListener("touchstart", start, false);
+                    canvas.addEventListener("touchmove",draw,false);
+                    canvas.addEventListener("mousedown",start, false)
+                    canvas.addEventListener("mousemove",draw,false);
+
+                    canvas.addEventListener("touchend",stop,false);
+                    canvas.addEventListener("mouseup",stop,false);
+                    canvas.addEventListener("mouseout",stop,false);
+                })
+
+                socket.on('line', (data) =>  {
+                    context.beginPath();
+                    context.lineWidth = data.width
+                    context.strokeStyle = data.color
+                    context.moveTo(data.oldPointX,data.oldPointY);
+                    context.lineTo(data.newPointX,data.newPointY);
+                    context.stroke();
+                })
+            }
+            
+        </script>
+    </head>
     <body>
-        <ul id="messages" type="none">
+        <ul id="waiting" type="none">
             <li id="usercount"></li>
             <li id="nickname"></li>
             <li id="userlist"></li>
             <li id="roommaster"></li>
             <li id="gamestartbtn"></li>
         </ul>
-
-        <script src="https://cdn.socket.io/4.5.3/socket.io.min.js" integrity="sha384-WPFUvHkB1aHA5TDSZi6xtDgkF0wXJcIIxXhC6h8OT8EH3fC5PWro5pWJ1THjcfEi" crossorigin="anonymous"></script>
-        <script>
-            params = (new URL(document.location)).searchParams
-            id = params.get('roomId')
-            
-            socket = io('localhost:52273',{
-                query: {
-                    roomId : id
-                }
-            });
-
-            socket.emit('roomMemberList', id)
-
-            socket.on('userCount', (count, nick) => {
-                var userCounter = document.getElementById('usercount');
-                var userList = document.getElementById('userlist');
-                var output='';
-                userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
-                for(let item of nick) {
-                    output += item + '<br>'
-                }
-                userList.innerHTML = output
-            })
-
-            socket.on('userNick', (nickname) => {
-                this.nickname = nickname
-                var userNickname = document.getElementById('nickname');
-                userNickname.innerHTML = "현재 당신의 닉네임 : " + this.nickname;
-            })
-
-            socket.on('findRoomMaster', (name) => {
-                if(this.nickname == name)
-                    roomMaster = true;
-                var chkroomMaster = document.getElementById('roommaster');
-                chkroomMaster.innerHTML = "방장? : " + roomMaster;
-
-                if(roomMaster) {
-                    var gamestartbtn = document.getElementById('gamestartbtn');
-                    gamestartbtn.innerHTML = "<button id = 'start'>게임시작</button>"
-                    var btn = document.getElementById('start')
-                    btn.onclick = function() {
-                        console.log("gameStart");
-                    }
-                }
-            })
-        </script>
+        
     </body>
 </html>
