@@ -1,8 +1,24 @@
 <!DOCTYPE html>
 <html>
-    <body>
-        <form action="./createRoom" method="post">
-            <input type="submit" value="방만들기"> 
-        </form>
+    <head>
+        <script>
+            window.onload = function() {
+                startbtn = document.querySelector('#btn')
+                startbtn.onmousedown = function() {
+                    startbtn.src = "after_btn.png"
+                }
+                startbtn.onmouseup = function() {
+                    startbtn.src = "before_btn.png"
+                }
+            }
+        </script>
+    </head>
+    <body background="background.png">
+        <div style="text-align: center;" width = "window.width"><img src="title.png" width="800" height="240" ></img></div>
+        <div style="text-align: center;">
+            <form action="./createRoom" method="post">
+                <input type="image" src="before_btn.png" width="200" height="100", id="btn">
+            </form>
+        </div>
     </body>
 </html>
