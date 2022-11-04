@@ -19,6 +19,7 @@
                 var draw_color, draw_width, is_drawing;
                 var restore_array, index;
                 var oldPointX, oldPointY,  newPointX, newPointY;
+                var background_color ="whitesmoke";
 
                 function start(event) {
                     is_drawing = true;
@@ -67,7 +68,7 @@
                 }
 
                 function clear_canvas() {
-                    context.fillStyle = 'whitesmoke';
+                    context.fillStyle = background_color;
                     context.clearRect(0,0,canvas.width, canvas.height);
                     context.fillRect(0,0,canvas.width, canvas.height);
 
@@ -124,14 +125,34 @@
                 })
 
                 socket.on('setBrowser', () => {
-                    document.body.innerHTML="<canvas id = 'canvas'></canvas>"
+                    document.body.innerHTML="<canvas id = 'canvas'></canvas><div style='background-color: darkgray; height: 50px; width: 770px; padding: 15px;'><table><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td><td><div class='palette'></div></td></table></div>"
+                    palettes = document.querySelectorAll(".palette")
+                    palettes[0].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: red;")
+                    palettes[1].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: orange;")
+                    palettes[2].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: yellow;")
+                    palettes[3].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: greenyellow;")
+                    palettes[4].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: green;")
+                    palettes[5].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: lightblue;")
+                    palettes[6].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: blue;")
+                    palettes[7].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: purple;")
+                    palettes[8].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: white;")
+                    palettes[9].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: grey;")
+                    palettes[10].setAttribute("style","height: 50px; width: 50px; border-radius: 50%; background-color: black;")
+
+                    for(let i=0;i<11;i++) {
+                        palettes[i].onclick = function() {
+                            console.log("clicked" + palettes[i].style.backgroundColor)
+                            draw_color = palettes[i].style.backgroundColor
+                        }
+                    }
+
                     canvas = document.getElementById('canvas')
                     canvas.width = 800
                     canvas.height = 600
 
                     context = canvas.getContext('2d')
-                    context.fillStyle = 'whitesmoke'
-                    context.fillRect(window.width/2-400,window.height/2-300,canvas.width,canvas.height);
+                    context.fillStyle = background_color
+                    context.fillRect(0,0,canvas.width,canvas.height);
 
                     draw_color="black";
                     draw_width = "2";
@@ -162,7 +183,7 @@
             
         </script>
     </head>
-    <body>
+    <body background="background.png">
         <ul id="waiting" type="none">
             <li id="usercount"></li>
             <li id="nickname"></li>
