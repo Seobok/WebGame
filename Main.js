@@ -44,7 +44,7 @@ app.use(express.static('public'))       //서버생성시 public에 있는 index
 
 app.post('/createRoom', (request, response) => {        //createRoom form에서 호출 받으면 랜덤 roomId를 query형태로 넘김
     id = generateSerial()
-    response.redirect('/room?roomId='+id)
+    response.redirect('/room?roomId=' + id)
 })
 
 app.listen(80, () => {});               //express 서버생성
@@ -54,12 +54,12 @@ server.listen(52273);                   //socket 서버 생성
 var addNick = new Map();                //Nickname을 저장하는 배열 <roomId(int), NicknameArr(Array)>
 
 io.on('connection', (socket) => {       //접속시
-    const roomId = socket.handshake.query.roomId
-    const userId = socket.id
+    const roomId = socket.handshake.query.roomId;
+    const userId = socket.id;
 
-    socket.join(roomId)
+    socket.join(roomId);
 
-    io.to(userId).emit('userNick', addNickname = generateUserNickname())        //Nickname부여
+    io.to(userId).emit('userNick', addNickname = generateUserNickname());       //Nickname부여
 
     socket.nickname = addNickname;
     socket.roomMaster = Boolean(false);                                         //socket property : nickname, roomMaster(필요한가?)
@@ -73,7 +73,7 @@ io.on('connection', (socket) => {       //접속시
 
     io.to(roomId).emit('findRoomMaster', addNick.get(roomId)[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
 
-    socket.on('roomMemberList', (roomId) => {                                   //roomMemberList를 호출 시
+    socket.on('roomMemberList', (roomId) => {                                                           //roomMemberList를 호출 시
         io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId)) //userCount형태로 usercount와 nicknameArray를 제공 / 이후 분리가 필요해 보임
     })
 
@@ -82,8 +82,21 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('line', (data) => {
-        //io.to(roomId).emit('line', data)
+        io.to(roomId).emit('line', data)
     })
+
+    socket.on('stop', () =>{
+        socket.to(roomId).emit('stop')
+    })
+
+    socket.on('undo', () =>{
+        socket.to(roomId).emit('undo')
+    })
+
+    socket.on('clear', () =>{
+        socket.to(roomId).emit('clear')
+    })
+
 
     socket.on('disconnect', () => {                                             //접속이 종료될 때
         addNick.get(roomId).splice(addNick.get(roomId).indexOf(socket.nickname), 1)     //addNick Map에서 해당 유저 nickName 제거
