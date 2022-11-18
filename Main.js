@@ -69,12 +69,14 @@ io.on('connection', (socket) => {       //접속시
             nicknames : [],
             currnetPlayer : "",
             currnetPlayerIndex : 0,
-            roomMaster : socket.roomMaster
+            roomMaster : socket.roomMaster,
+            userScore : []
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
    
     RoomList.get(roomId).nicknames.push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
+    RoomList.get(roomId).userScore.push(0)
 
     io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
 
@@ -117,7 +119,9 @@ io.on('connection', (socket) => {       //접속시
 
 
     socket.on('disconnect', () => {                                             //접속이 종료될 때
-        RoomList.get(roomId).nicknames.splice(RoomList.get(roomId).nicknames.indexOf(socket.nickname), 1)     //addNick Map에서 해당 유저 nickName 제거
+        var removeIndex = RoomList.get(roomId).nicknames.indexOf(socket.nickname)
+        RoomList.get(roomId).nicknames.splice(removeIndex, 1)     //addNick Map에서 해당 유저 nickName 제거
+        RoomList.get(roomId).userScore.splice(removeIndex, 1)
         if(io.of('/').adapter.rooms.has(roomId)) {                                        //roomId가 존재하면 (남은 사람이 존재하여 방이 유지되면)
             io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames);    //남은 usercount와 nicknameArray를 제공
             io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공
