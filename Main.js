@@ -51,7 +51,7 @@ app.listen(80, () => {});               //express 서버생성
 
 server.listen(52273);                   //socket 서버 생성
 
-var addNick = new Map();                //Nickname을 저장하는 배열 <roomId(int), NicknameArr(Array)>
+var RoomList = new Map();                //Nickname을 저장하는 배열 <roomId(int), NicknameArr(Array)>
 
 io.on('connection', (socket) => {       //접속시
     const roomId = socket.handshake.query.roomId;
@@ -64,21 +64,39 @@ io.on('connection', (socket) => {       //접속시
     socket.nickname = addNickname;
     socket.roomMaster = Boolean(false);                                         //socket property : nickname, roomMaster(필요한가?)
 
-    if(!addNick.has(roomId)) {                                                  //방이 존재하지 않는다면 (처음 들어왔다면)
-        addNick.set(roomId, new Array());                                       //addNick Map에 roomId 추가
+    if(!RoomList.has(roomId)) {                                                  //방이 존재하지 않는다면 (처음 들어왔다면)
+        RoomList.set(roomId, {
+            nicknames : [],
+            currnetPlayer : "",
+            currnetPlayerIndex : 0,
+            roomMaster : socket.roomMaster
+        });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
    
-    addNick.get(roomId).push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
+    RoomList.get(roomId).nicknames.push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
 
-    io.to(roomId).emit('findRoomMaster', addNick.get(roomId)[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
+    io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
 
     socket.on('roomMemberList', (roomId) => {                                                           //roomMemberList를 호출 시
-        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId)) //userCount형태로 usercount와 nicknameArray를 제공 / 이후 분리가 필요해 보임
+        io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames) //userCount형태로 usercount와 nicknameArray를 제공 / 이후 분리가 필요해 보임
     })
 
     socket.on('gameStart', () => {                                              //방장이 게임시작 버튼을 누르면
-        io.to(roomId).emit('setBrowser')                                        //브라우저 설정 이벤트 호출
+        RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
+        RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
+        io.to(roomId).emit('setBrowser', RoomList.get(roomId).currnetPlayer)    //브라우저 설정 이벤트 호출
+    })
+
+    socket.on('nextPlayer', () => {
+        const previousPlayer = RoomList.get(roomId).currnetPlayer
+        RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).currnetPlayerIndex - 1
+        if(RoomList.get(roomId).currnetPlayerIndex==-1)
+        {
+            RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
+        }
+        RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
+        io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)
     })
 
     socket.on('line', (data) => {
@@ -99,13 +117,13 @@ io.on('connection', (socket) => {       //접속시
 
 
     socket.on('disconnect', () => {                                             //접속이 종료될 때
-        addNick.get(roomId).splice(addNick.get(roomId).indexOf(socket.nickname), 1)     //addNick Map에서 해당 유저 nickName 제거
+        RoomList.get(roomId).nicknames.splice(RoomList.get(roomId).nicknames.indexOf(socket.nickname), 1)     //addNick Map에서 해당 유저 nickName 제거
         if(io.of('/').adapter.rooms.has(roomId)) {                                        //roomId가 존재하면 (남은 사람이 존재하여 방이 유지되면)
-            io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, addNick.get(roomId));    //남은 usercount와 nicknameArray를 제공
-            io.to(roomId).emit('findRoomMaster', addNick.get(roomId)[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공
-        }
+            io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames);    //남은 usercount와 nicknameArray를 제공
+            io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공
+        }//TODO 그림판이 열리고 나갔을때 오류발생
         else {                                                                          //남은 사람이 존재하지 않는다면
-            addNick.delete(roomId)                                                      //roomId 제거
+            RoomList.delete(roomId)                                                      //roomId 제거
         }
     })
 })

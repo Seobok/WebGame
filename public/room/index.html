@@ -121,7 +121,6 @@
                         var startbtn = document.getElementById('startbtn')
                         startbtn.onclick = function() {
                             socket.emit('gameStart')
-                            console.log("test")
                         }
                     }
                 })
@@ -129,7 +128,6 @@
                 socket.on('stop', () => {
                     index++;
                     restore_array.push(context.getImageData(0,0,canvas.width, canvas.height));
-                    console.log(index)
                 })
 
                 socket.on('undo', () =>{
@@ -140,7 +138,7 @@
                     clear_canvas();
                 })
 
-                socket.on('setBrowser', () => {
+                socket.on('setBrowser', (currentPlayer) => {
                     document.body.innerHTML = `
                     <canvas id = 'canvas'>
                     </canvas>
@@ -186,7 +184,12 @@
                                 <div class = 'clear'></div>
                             </td>
                         </table>
-                    </div>`
+                    </div>
+                    <button id='nextPlayer'>다음사람</button>`
+                    var startbtn = document.getElementById('nextPlayer')
+                    startbtn.onclick = function() {
+                        socket.emit('nextPlayer')
+                    }
                     palettes = document.querySelectorAll(".palette")
                     palettes[0].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: red;")
                     palettes[1].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: orange;")
@@ -200,15 +203,15 @@
                     palettes[9].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: grey;")
                     palettes[10].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: black;")
 
-                    undo = document.querySelector('.undo')
-                    undo.setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: violet;")
+                    undo = document.querySelector('.undo')  //TODO currnetPlayer가 아니면 팔레트 지우기
+                    undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
                     undo.onclick = function() {
                         undo_last();
                         socket.emit('undo')
                     }
 
                     clear = document.querySelector('.clear')
-                    clear.setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: brown;")
+                    clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
                     clear.onclick = function() {
                         clear_canvas();
                         socket.emit('clear')
@@ -216,7 +219,6 @@
 
                     for(let i = 0; i < 11; i++) {
                         palettes[i].onclick = function() {
-                            console.log("clicked" + palettes[i].style.backgroundColor)
                             draw_color = palettes[i].style.backgroundColor
                         }
                     }
@@ -236,14 +238,42 @@
                     restore_array = [];
                     index = -1;
 
-                    canvas.addEventListener("touchstart", start, false);
-                    canvas.addEventListener("touchmove", draw, false);
-                    canvas.addEventListener("mousedown", start, false)
-                    canvas.addEventListener("mousemove", draw, false);
+                    if(this.nickname == currentPlayer)
+                    {
+                        canvas.addEventListener("touchstart", start, false);
+                        canvas.addEventListener("touchmove", draw, false);
+                        canvas.addEventListener("mousedown", start, false)
+                        canvas.addEventListener("mousemove", draw, false);
 
-                    canvas.addEventListener("touchend", stop, false);
-                    canvas.addEventListener("mouseup", stop, false);
-                    canvas.addEventListener("mouseout", stop, false);
+                        canvas.addEventListener("touchend", stop, false);
+                        canvas.addEventListener("mouseup", stop, false);
+                        canvas.addEventListener("mouseout", stop, false);
+                    }
+                })
+
+                socket.on('next', (previousPlayer, currnetPlayer) => {
+                    if(this.nickname == previousPlayer)
+                    {
+                        canvas.removeEventListener("touchstart", start)
+                        canvas.removeEventListener("touchmove", draw);
+                        canvas.removeEventListener("mousedown", start)
+                        canvas.removeEventListener("mousemove", draw);
+
+                        canvas.removeEventListener("touchend", stop);
+                        canvas.removeEventListener("mouseup", stop);
+                        canvas.removeEventListener("mouseout", stop);
+                    }
+                    if(this.nickname == currnetPlayer)
+                    {
+                        canvas.addEventListener("touchstart", start, false);
+                        canvas.addEventListener("touchmove", draw, false);
+                        canvas.addEventListener("mousedown", start, false)
+                        canvas.addEventListener("mousemove", draw, false);
+
+                        canvas.addEventListener("touchend", stop, false);
+                        canvas.addEventListener("mouseup", stop, false);
+                        canvas.addEventListener("mouseout", stop, false);
+                    }
                 })
 
                 socket.on('line', (data) => {
