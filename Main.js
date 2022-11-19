@@ -77,11 +77,6 @@ io.on('connection', (socket) => {       //접속시
         socket.roomMaster = true;                                               //roomMaster 지정
     }
 
-    if(RoomList.get(roomId).nicknames.length > 2)
-    {
-        socket.to(userId).emit('over')
-    }
-
     while(RoomList.get(roomId).nicknames.indexOf(socket.nickname) >= 0)
     {
         io.to(userId).emit('userNick', addNickname = generateUserNickname());
@@ -90,6 +85,12 @@ io.on('connection', (socket) => {       //접속시
    
     RoomList.get(roomId).nicknames.push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
     RoomList.get(roomId).userScore.push(0)
+
+    if(RoomList.get(roomId).nicknames.length > 2)
+    {
+        console.log("over")
+        io.to(userId).emit('over')
+    }
 
     io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
 

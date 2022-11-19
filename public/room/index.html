@@ -92,6 +92,7 @@
                 socket.emit('roomMemberList', id)
 
                 socket.on('over', () => {
+                    console.log('인원초과')
                     window.location.replace('/overcapacity.html')
                 })
 
@@ -113,6 +114,7 @@
                 })
 
                 socket.on('findRoomMaster', (name) => {
+                    this.roomMaster = false
                     if(this.nickname == name)
                         roomMaster = true;
                     var chkroomMaster = document.getElementById('roommaster');
