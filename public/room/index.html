@@ -214,18 +214,16 @@
                     palettes[10].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: black;")
 
                     undo = document.querySelector('.undo')  //TODO currnetPlayer가 아니면 팔레트 지우기
-                    undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
                     undo.onclick = function() {
-                        undo_last();
-                        socket.emit('undo')
-                    }
+                            undo_last();
+                            socket.emit('undo')
+                        }
 
                     clear = document.querySelector('.clear')
-                    clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
                     clear.onclick = function() {
-                        clear_canvas();
-                        socket.emit('clear')
-                    }
+                            clear_canvas();
+                            socket.emit('clear')
+                        }
 
                     for(let i = 0; i < 11; i++) {
                         palettes[i].onclick = function() {
@@ -258,10 +256,18 @@
                         canvas.addEventListener("touchend", stop, false);
                         canvas.addEventListener("mouseup", stop, false);
                         canvas.addEventListener("mouseout", stop, false);
+
+                        undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
+                        
+
+                        clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
+                        
                     }
                 })
 
                 socket.on('next', (previousPlayer, currnetPlayer) => {
+                    socket.emit('clear')
+
                     if(this.nickname == previousPlayer)
                     {
                         canvas.removeEventListener("touchstart", start)
@@ -272,6 +278,9 @@
                         canvas.removeEventListener("touchend", stop);
                         canvas.removeEventListener("mouseup", stop);
                         canvas.removeEventListener("mouseout", stop);
+
+                        undo.setAttribute("style", "height: 0px; width: 0px");
+                        clear.setAttribute("style", "height: 0px; width: 0px");
                     }
                     if(this.nickname == currnetPlayer)
                     {
@@ -283,6 +292,9 @@
                         canvas.addEventListener("touchend", stop, false);
                         canvas.addEventListener("mouseup", stop, false);
                         canvas.addEventListener("mouseout", stop, false);
+
+                        undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
+                        clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
                     }
                 })
 
