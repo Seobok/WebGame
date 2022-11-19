@@ -91,6 +91,10 @@
 
                 socket.emit('roomMemberList', id)
 
+                socket.on('over', () => {
+                    window.location.replace('/overcapacity.html')
+                })
+
                 socket.on('userCount', (count, nick) => {
                     var userCounter = document.getElementById('usercount');
                     var userList = document.getElementById('userlist');

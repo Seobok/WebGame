@@ -1,4 +1,6 @@
-const express = require('express')
+const { response } = require('express');
+const express = require('express');
+const { request } = require('http');
 
 function generateSerial() {     //방 시리얼 넘버 생성
     var chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -73,6 +75,17 @@ io.on('connection', (socket) => {       //접속시
             userScore : []
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
+    }
+
+    if(RoomList.get(roomId).nicknames.length > 2)
+    {
+        socket.to(userId).emit('over')
+    }
+
+    while(RoomList.get(roomId).nicknames.indexOf(socket.nickname) >= 0)
+    {
+        io.to(userId).emit('userNick', addNickname = generateUserNickname());
+        socket.nickname = addNickname;
     }
    
     RoomList.get(roomId).nicknames.push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
