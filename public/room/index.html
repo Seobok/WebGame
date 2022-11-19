@@ -97,14 +97,17 @@
                 })
 
                 socket.on('userCount', (count, nick) => {
-                    var userCounter = document.getElementById('usercount');
-                    var userList = document.getElementById('userlist');
-                    var output = '';
-                    userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
-                    for(let item of nick) {
-                        output += item + '<br>'
-                    }
-                    userList.innerHTML = output
+                    if(document.getElementById('usercount'))
+                    {
+                        var userCounter = document.getElementById('usercount');
+                        var userList = document.getElementById('userlist');
+                        var output = '';
+                        userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
+                        for(let item of nick) {
+                            output += item + '<br>'
+                        }
+                        userList.innerHTML = output
+                    }                    
                 })
 
                 socket.on('userNick', (nickname) => {
@@ -117,16 +120,17 @@
                     this.roomMaster = false
                     if(this.nickname == name)
                         roomMaster = true;
-                    var chkroomMaster = document.getElementById('roommaster');
-                    chkroomMaster.innerHTML = "방장? : " + roomMaster;
-
-                    if(roomMaster) {
+                    if(document.getElementById('roommaster'))
+                    {
+                        var chkroomMaster = document.getElementById('roommaster');
+                        chkroomMaster.innerHTML = "방장? : " + roomMaster;
+                        if(roomMaster) {
                         var gamestartbtntext = document.getElementById('gamestartbtn');
                         gamestartbtntext.innerHTML = "<button id='startbtn'>게임시작</button>"
-
                         var startbtn = document.getElementById('startbtn')
                         startbtn.onclick = function() {
                             socket.emit('gameStart')
+                        }
                         }
                     }
                 })

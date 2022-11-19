@@ -1,6 +1,4 @@
-const { response } = require('express');
 const express = require('express');
-const { request } = require('http');
 
 function generateSerial() {     //방 시리얼 넘버 생성
     var chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -130,7 +128,6 @@ io.on('connection', (socket) => {       //접속시
     socket.on('clear', () =>{
         socket.to(roomId).emit('clear')
     })
-
 
     socket.on('disconnect', () => {                                             //접속이 종료될 때
         var removeIndex = RoomList.get(roomId).nicknames.indexOf(socket.nickname)
