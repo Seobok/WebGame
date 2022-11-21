@@ -152,7 +152,7 @@
                     document.body.innerHTML = `
                     <canvas id = 'canvas'>
                     </canvas>
-                    <div style = 'background-color: darkgray; height: 50px; width: 770px; padding: 15px;'>
+                    <div id = 'tool'>
                         <table>
                             <td>
                                 <div class = 'palette'></div>
@@ -201,19 +201,10 @@
                         socket.emit('nextPlayer')
                     }
                     palettes = document.querySelectorAll(".palette")
-                    palettes[0].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: red;")
-                    palettes[1].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: orange;")
-                    palettes[2].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: yellow;")
-                    palettes[3].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: greenyellow;")
-                    palettes[4].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: green;")
-                    palettes[5].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: lightblue;")
-                    palettes[6].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: blue;")
-                    palettes[7].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: purple;")
-                    palettes[8].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: white;")
-                    palettes[9].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: grey;")
-                    palettes[10].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: black;")
 
-                    undo = document.querySelector('.undo')  //TODO currnetPlayer가 아니면 팔레트 지우기
+                    tool = document.getElementById('tool');
+                    
+                    undo = document.querySelector('.undo')
                     undo.onclick = function() {
                             undo_last();
                             socket.emit('undo')
@@ -258,10 +249,20 @@
                         canvas.addEventListener("mouseout", stop, false);
 
                         undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
-                        
-
                         clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
+                        tool.setAttribute("style", "background-color: darkgray; height: 50px; width: 770px; padding: 15px;")
                         
+                        palettes[0].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: red;")
+                        palettes[1].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: orange;")
+                        palettes[2].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: yellow;")
+                        palettes[3].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: greenyellow;")
+                        palettes[4].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: green;")
+                        palettes[5].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: lightblue;")
+                        palettes[6].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: blue;")
+                        palettes[7].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: purple;")
+                        palettes[8].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: white;")
+                        palettes[9].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: grey;")
+                        palettes[10].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: black;")
                     }
                 })
 
@@ -281,6 +282,19 @@
 
                         undo.setAttribute("style", "height: 0px; width: 0px");
                         clear.setAttribute("style", "height: 0px; width: 0px");
+                        tool.setAttribute("style", "height: 0px; width: 0px");
+
+                        palettes[0].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[1].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[2].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[3].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[4].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[5].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[6].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[7].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[8].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[9].setAttribute("style", "height: 0px; width: 0px;")
+                        palettes[10].setAttribute("style", "height: 0px; width: 0px;")
                     }
                     if(this.nickname == currnetPlayer)
                     {
@@ -295,6 +309,19 @@
 
                         undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
                         clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
+                        tool.setAttribute("style", "background-color: darkgray; height: 50px; width: 770px; padding: 15px;")
+                        
+                        palettes[0].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: red;")
+                        palettes[1].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: orange;")
+                        palettes[2].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: yellow;")
+                        palettes[3].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: greenyellow;")
+                        palettes[4].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: green;")
+                        palettes[5].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: lightblue;")
+                        palettes[6].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: blue;")
+                        palettes[7].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: purple;")
+                        palettes[8].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: white;")
+                        palettes[9].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: grey;")
+                        palettes[10].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: black;")
                     }
                 })
 

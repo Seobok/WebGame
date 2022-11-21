@@ -136,7 +136,7 @@ io.on('connection', (socket) => {       //접속시
         if(io.of('/').adapter.rooms.has(roomId)) {                                        //roomId가 존재하면 (남은 사람이 존재하여 방이 유지되면)
             io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames);    //남은 usercount와 nicknameArray를 제공
             io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공
-        }//TODO 그림판이 열리고 나갔을때 오류발생
+        }
         else {                                                                          //남은 사람이 존재하지 않는다면
             RoomList.delete(roomId)                                                      //roomId 제거
         }
