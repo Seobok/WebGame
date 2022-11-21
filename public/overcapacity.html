@@ -1,9 +1,17 @@
 <!DOCTYPE html>
 <html>
     <head>
-
+        <script>
+            window.onload = function() {
+                home = document.getElementById('goHome');
+                home.onclick = function() {
+                    window.location.replace('/');
+                }
+            }
+        </script>
     </head>
     <body>
         <div><h1>인원 초과!</h1></div>
+        <button id = 'goHome'>홈으로 가기</button>
     </body>
 </html>

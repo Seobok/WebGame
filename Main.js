@@ -113,6 +113,12 @@ io.on('connection', (socket) => {       //접속시
         io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)
     })
 
+    socket.on('message', (msg) => {
+        console.log('Message received: ' + msg);
+
+        io.emit('message', msg);
+    });
+
     socket.on('line', (data) => {
         io.to(roomId).emit('line', data)
     })

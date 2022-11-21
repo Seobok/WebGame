@@ -195,11 +195,36 @@
                             </td>
                         </table>
                     </div>
-                    <button id='nextPlayer'>다음사람</button>`
+                    <button id='nextPlayer'>다음사람</button>
+                    <ul id='msgs' type = 'none'>
+                    </ul>
+                    <form id = 'msgform'>
+                        <input id ='msginput' autocomplete = 'off' type='text'>
+                        <button type = 'submit'>입력</button>    
+                    </form>`
                     var startbtn = document.getElementById('nextPlayer')
                     startbtn.onclick = function() {
                         socket.emit('nextPlayer')
                     }
+
+                    var msgform = document.getElementById('msgform');
+
+                    socket.on('message', (msg) => {
+                        var messageList = document.getElementById('msgs');
+                        var messageTag = document.createElement("li");
+                        messageTag.innerText = msg;
+                        messageList.appendChild(messageTag);
+                    });
+
+                    msgform.onsubmit = (e) => {
+                        e.preventDefault();
+                        var msginput = document.getElementById('msginput');
+
+                        socket.emit('message', msginput.value);
+
+                        msginput.value = "";
+                    };
+                    
                     palettes = document.querySelectorAll(".palette")
 
                     tool = document.getElementById('tool');
