@@ -135,6 +135,10 @@ io.on('connection', (socket) => {       //접속시
         socket.to(roomId).emit('clear')
     })
 
+    socket.on('wordCategory', (data) => {
+        socket.to(roomId).emit('wordList', data);
+    })
+
     socket.on('disconnect', () => {                                             //접속이 종료될 때
         var removeIndex = RoomList.get(roomId).nicknames.indexOf(socket.nickname)
         RoomList.get(roomId).nicknames.splice(removeIndex, 1)     //addNick Map에서 해당 유저 nickName 제거
