@@ -51,7 +51,7 @@ app.listen(80, () => {});               //express 서버생성
 
 server.listen(52273);                   //socket 서버 생성
 
-var RoomList = new Map();                //Nickname을 저장하는 배열 <roomId(int), NicknameArr(Array)>
+var RoomList = new Map();                //Nickname을 저장하는 배열 <roomId(String), NicknameArr(Array)>
 
 io.on('connection', (socket) => {       //접속시
     const roomId = socket.handshake.query.roomId;
