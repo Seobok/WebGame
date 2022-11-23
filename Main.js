@@ -57,6 +57,9 @@ io.on('connection', (socket) => {       //접속시
     const roomId = socket.handshake.query.roomId;
     const userId = socket.id;
 
+    korean = new Array();
+    pen = new Array();
+
     socket.join(roomId);
 
     io.to(userId).emit('userNick', addNickname = generateUserNickname());       //Nickname부여
@@ -70,7 +73,8 @@ io.on('connection', (socket) => {       //접속시
             currnetPlayer : "",
             currnetPlayerIndex : 0,
             roomMaster : socket.roomMaster,
-            userScore : []
+            userScore : [],
+            category : "",
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
@@ -84,9 +88,8 @@ io.on('connection', (socket) => {       //접속시
     RoomList.get(roomId).nicknames.push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
     RoomList.get(roomId).userScore.push(0)
 
-    if(RoomList.get(roomId).nicknames.length > 2)
+    if(RoomList.get(roomId).nicknames.length > 4)
     {
-        console.log("over")
         io.to(userId).emit('over')
     }
 
@@ -97,7 +100,7 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('gameStart', () => {                                              //방장이 게임시작 버튼을 누르면
-        RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
+        RoomList.get(roomId).currnetPlayerIndex = 0
         RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
         io.to(roomId).emit('setBrowser', RoomList.get(roomId).currnetPlayer)    //브라우저 설정 이벤트 호출
     })
@@ -114,8 +117,6 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('message', (msg) => {
-        console.log('Message received: ' + msg);
-
         io.emit('message', msg);
     });
 
@@ -136,7 +137,50 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('wordCategory', (data) => {
+        RoomList.get(roomId).category = data
+        
         socket.to(roomId).emit('wordList', data);
+    })
+
+    socket.on('getWords', () => {
+        var words = []
+        var category = RoomList.get(roomId).category
+
+        if(category == "korean") {
+            for(var i = 0 ; i < 3 ; i++)
+            {
+                randomNumber = Math.floor(Math.random() * korean.length);
+                words.push(korean[randomNumber])
+
+                korean.splice(randomNumber, 1)
+            }
+        }
+        else if (category == "pen") {
+            for(var i = 0 ; i < 3 ; i++)
+            {
+                randomNumber = Math.floor(Math.random() * pen.length);
+                words.push(pen[randomNumber])
+
+                pen.splice(randomNumber, 1)
+            }
+        }
+
+        io.to(roomId).emit('setWords', words)
+    })
+
+    socket.on('sendCSV', (data) => {
+        var allRows = data.split(/\r?\n|\r/);
+        for (var singleRow = 0; singleRow < allRows.length; singleRow++) {
+            var rowCells = allRows[singleRow].split(',');
+            if(Math.floor(rowCells[0]/1000) == 1)
+            {
+                korean.push(rowCells[1])
+            }
+            else if(Math.floor(rowCells[0]/1000) == 2)
+            {
+                pen.push(rowCells[1])
+            }
+        }
     })
 
     socket.on('disconnect', () => {                                             //접속이 종료될 때
