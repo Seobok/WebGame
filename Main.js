@@ -142,6 +142,10 @@ io.on('connection', (socket) => {       //접속시
         socket.to(roomId).emit('wordList', data);
     })
 
+    socket.on('choicedWord',(data) => {
+        socket.to(roomId).emit('choicedWord2', data)
+    })
+
     socket.on('getWords', () => {
         var words = []
         var category = RoomList.get(roomId).category
