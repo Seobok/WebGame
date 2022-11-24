@@ -172,6 +172,10 @@ io.on('connection', (socket) => {       //접속시
         io.to(roomId).emit('setWords', words)
     })
 
+    socket.on('wordChoiced', () => {
+        socket.to(roomId).emit('wordChoiced2');
+    })
+
     socket.on('sendCSV', (data) => {
         var allRows = data.split(/\r?\n|\r/);
         for (var singleRow = 0; singleRow < allRows.length; singleRow++) {

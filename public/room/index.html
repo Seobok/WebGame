@@ -107,7 +107,44 @@
                     }
                 }
 
-                function startTimer(time, obj, list){
+                function wordTimer(time, obj){
+                    var min, sec;
+                    console.log('타이머 실행2')
+
+                    var timer = setInterval(function(){
+                        time--;
+
+                        min = Math.floor(time/60);
+                        sec = time%60;
+                        min = min%60;
+
+                        var tm = min;
+                        var ts = sec;
+
+                        // 한자리일 경우 처리
+                        if(tm < 10){
+                            tm = "0" + min;
+                        }
+                        if(ts < 10){
+                            ts = "0" + sec;
+                        }
+
+                        // 함수 호출 당시 받은 object의 html 교체
+                        obj.innerHTML =  "남은 시간 : " + tm + ":" + ts;
+
+                        if(ts == 0) 
+                        {
+                            setTimeout(function(){
+                                clearInterval(timer)
+                            }, 0)
+                            obj.innerHTML =  '';
+                            alert('시간 초과!');
+                        }
+                    }
+                , 1000);
+                }
+
+                function startTimer(time, obj, list, wordTimer){
                     var min, sec;
                     console.log('타이머 실행')
 
@@ -132,14 +169,13 @@
                         // 함수 호출 당시 받은 object의 html 교체
                         obj.innerHTML =  "남은 시간 : " + tm + ":" + ts;
 
-                        //한 문제가 끝나면 word undefined나 null로 초기화해야됨
-
                         if(word) 
                         {
                             setTimeout(function(){
                                 clearInterval(timer)
                             }, 0)
                             obj.innerHTML =  '';
+                            socket.emit('wordChoiced')
                         }
 
                         if(ts == 0) 
@@ -147,13 +183,14 @@
                             var words = document.getElementById('words');
                             setTimeout(function(){
                                 clearInterval(timer)
-                            }, 0)
+                            }, 0)                            
+                            obj.innerHTML =  '';
 
                             randomNumber = Math.floor(Math.random() * list.length);
                             word = list[randomNumber];
                             console.log(word);
                             socket.emit('choicedWord', word);
-                            obj.innerHTML =  '';
+                            socket.emit('wordChoiced')
                             
                             words.innerHTML = "";
                         }
@@ -371,12 +408,12 @@
                     var words = document.getElementById('words');
                     var wordClass = document.getElementsByClassName('word');
 
+                    word = undefined;
+
                     if(this.nickname == curPlayer)
                     {
                         words.innerHTML = "<form><button class = 'word'>"+list[0]+"</button> <button class = 'word'>"+list[1]+"</button> <button class = 'word'>"+list[2]+"</button></form>";
-
-                        word = undefined;
-                        
+                      
                         var timer = document.getElementById('timer');
                         startTimer(10, timer, list);
                     }                        
@@ -385,9 +422,11 @@
                     {
                         wordClass[i].onclick = function() {
                             word = wordClass[i].innerText;
+                            console.log(word);
                             socket.emit('choicedWord', word);
                             var words = document.getElementById('words');
                             words.innerHTML=""
+                            wordTimer(150, timer);
                         }
                     }
                 })
@@ -397,13 +436,19 @@
                     console.log(word)
                 })
 
+                socket.on('wordChoiced2', () => {
+                    var timer = document.getElementById('timer');
+                    wordTimer(150, timer)
+                })
+
                 socket.on('next', (previousPlayer, currentPlayer) => {
                     socket.emit('clear')
+                    var timer = document.getElementById('timer');
+                    timer.innerHTML =''
                     curPlayer = currentPlayer
 
                     if(this.nickname == previousPlayer)
                     {
-                        //word = undefined;
                         var words = document.getElementById('words');
                         words.innerHTML="";
 
@@ -436,11 +481,6 @@
                     if(this.nickname == currentPlayer)
                     {
                         socket.emit('getWords')
-
-                        //word = undefined;
-                        
-                        //var timer = document.getElementById('timer');
-                        //startTimer(60, timer);
 
                         canvas.addEventListener("touchstart", start, false);
                         canvas.addEventListener("touchmove", draw, false);
