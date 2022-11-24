@@ -7,6 +7,7 @@
             var currentCategory = 'notChoice';
             var curPlayer;
             var word;
+            var draw_timer = null;
 
             const changeValue = (target) => {
                 currentCategory = target.value;
@@ -107,11 +108,11 @@
                     }
                 }
 
-                function wordTimer(time, obj){
+                function drawTimer(time, obj){
                     var min, sec;
                     console.log('타이머 실행2')
 
-                    var timer = setInterval(function(){
+                    draw_timer = setInterval(function(){
                         time--;
 
                         min = Math.floor(time/60);
@@ -134,9 +135,9 @@
 
                         if(ts == 0) 
                         {
-                            setTimeout(function(){
-                                clearInterval(timer)
-                            }, 0)
+                            clearInterval(draw_timer)
+                            draw_timer = null;
+
                             obj.innerHTML =  '';
                             alert('시간 초과!');
                         }
@@ -144,7 +145,7 @@
                 , 1000);
                 }
 
-                function startTimer(time, obj, list, wordTimer){
+                function choiceWordTimer(time, obj, list, wordTimer){
                     var min, sec;
                     console.log('타이머 실행')
 
@@ -415,7 +416,7 @@
                         words.innerHTML = "<form><button class = 'word'>"+list[0]+"</button> <button class = 'word'>"+list[1]+"</button> <button class = 'word'>"+list[2]+"</button></form>";
                       
                         var timer = document.getElementById('timer');
-                        startTimer(10, timer, list);
+                        choiceWordTimer(10, timer, list);
                     }                        
                     
                     for(let i =0; i<wordClass.length; i++)
@@ -426,7 +427,7 @@
                             socket.emit('choicedWord', word);
                             var words = document.getElementById('words');
                             words.innerHTML=""
-                            wordTimer(150, timer);
+                            drawTimer(150, timer);
                         }
                     }
                 })
@@ -438,13 +439,20 @@
 
                 socket.on('wordChoiced2', () => {
                     var timer = document.getElementById('timer');
-                    wordTimer(150, timer)
+                    drawTimer(150, timer)
                 })
 
                 socket.on('next', (previousPlayer, currentPlayer) => {
                     socket.emit('clear')
+                    if(draw_timer != null)
+                    {
+                        clearInterval(draw_timer)
+                        draw_timer = null;
+                    }
+
                     var timer = document.getElementById('timer');
                     timer.innerHTML =''
+
                     curPlayer = currentPlayer
 
                     if(this.nickname == previousPlayer)
