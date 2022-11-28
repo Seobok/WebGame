@@ -126,7 +126,7 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('message', (msg) => {
-        if(msg != "" && msg == RoomList.get(roomId).answer)
+        if(msg != "" && msg == RoomList.get(roomId).answer && socket.nickname != RoomList.get(roomId).currnetPlayer)
         {
             RoomList.get(roomId).answer=""
             nextPlayer();

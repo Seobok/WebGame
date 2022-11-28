@@ -347,10 +347,11 @@
                     <div class = "popup_layer" id="popup_layer" style="display: none;">
                         <div class="popup_box">
                             <div class="popup_cont">
-                                123123123123
-                                1231123123123<br>
-                                123123123123
-                                123123123123
+                                <div id = "words">
+                                    <button class = 'word'></button>
+                                    <button class = 'word'></button> 
+                                    <button class = 'word'></button>
+                                </div>
                             </div>
                         </div>
                     </div>`
@@ -367,17 +368,6 @@
                         var msginput = document.getElementById('msginput');
 
                         socket.emit('message', msginput.value);
-
-                        msginput.value = "";
-                    };
-
-                    var waitingMsgForm = document.getElementById('waitingMsgForm');
-
-                    waitingMsgForm.onsubmit = (e) => {
-                        e.preventDefault();
-                        var msginput = document.getElementById('waitingMsgInput');
-
-                        socket.emit('message1', msginput.value);
 
                         msginput.value = "";
                     };
@@ -444,20 +434,28 @@
                     var words = document.getElementById('words');
                     var wordClass = document.getElementsByClassName('word');
 
-                    openPop();
+                    
 
                     word = undefined;
 
                     if(this.nickname == curPlayer)
                     {
-                        words.innerHTML = "<form><button class = 'word'>"+list[0]+"</button> <button class = 'word'>"+list[1]+"</button> <button class = 'word'>"+list[2]+"</button></form>";
-                      
+                        for(let i =0; i<wordClass.length; i++)
+                        {
+                            wordClass[i].innerHTML = list[i]
+                        }
+
+                        openPop();
+
                         var timer = document.getElementById('timer');
                         choiceWordTimer(10, timer, list);
                     }                        
                     
                     for(let i =0; i<wordClass.length; i++)
                     {
+                        wordClass[i].onsubmit= function() {
+
+                        }
                         wordClass[i].onclick = function() {
                             word = wordClass[i].innerText;
                             console.log(word);
@@ -476,7 +474,6 @@
                 })
 
                 socket.on('wordChoiced2', () => {
-                    closePop()
                     var timer = document.getElementById('timer');
                     drawTimer(150, timer)
                 })
@@ -663,8 +660,8 @@
                 <tr style = "height: 15px;">
                     <td colspan="3" style="height: 20px; text-align:center; vertical-align:middle; border-style: solid;">
                         <form id = 'waitingMsgForm'>
-                            <input id = 'waitingMsgInput'style = 'width: 900px;' autocomplete = 'off' type='text'>
-                            <input type = 'submit' value="채팅 입력">
+                            <input id ='waitingMsgInput' autocomplete = 'off' type='text'>
+                            <button type = 'submit'>입력</button>    
                         </form>
                     </td>
                 </tr>
