@@ -64,6 +64,10 @@ io.on('connection', (socket) => {       //접속시
 
     korean = new Array();
     pen = new Array();
+    instrument = new Array();
+    food = new Array();
+    electronics = new Array();
+    sport = new Array();
 
     socket.join(roomId);
 
@@ -82,6 +86,7 @@ io.on('connection', (socket) => {       //접속시
             readyStatus : [],
             category : "",
             answer : "",
+            round : 0,
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
@@ -108,7 +113,12 @@ io.on('connection', (socket) => {       //접속시
         RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).currnetPlayerIndex - 1
         if(RoomList.get(roomId).currnetPlayerIndex==-1)
         {
+            RoomList.get(roomId).round++;
             RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
+        }
+        if(RoomList.get(roomId).round == 3)
+        {
+            //게임종료
         }
         RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
         io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)
@@ -119,9 +129,17 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('gameStart', () => {                                              //방장이 게임시작 버튼을 누르면
-        RoomList.get(roomId).currnetPlayerIndex = 0
-        RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
-        io.to(roomId).emit('setBrowser', RoomList.get(roomId).currnetPlayer)    //브라우저 설정 이벤트 호출
+        if(RoomList.get(roomId).nicknames.length == 1)
+        {
+            io.to(roomId).emit('requireMorePlayer')
+        }
+        else
+        {
+            RoomList.get(roomId).currnetPlayerIndex = 0
+            RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
+            io.to(roomId).emit('setBrowser', RoomList.get(roomId).currnetPlayer)    //브라우저 설정 이벤트 호출
+        }
+        
     })
 
     socket.on('nextPlayer', () => {
@@ -143,6 +161,9 @@ io.on('connection', (socket) => {       //접속시
     socket.on('changeReady', (ready) => {
         var allReady = true;
         RoomList.get(roomId).readyStatus[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] = ready
+
+        io.to(roomId).emit('changeReadyImage', RoomList.get(roomId).nicknames.indexOf(socket.nickname), ready)
+
         for(let i=1;i<RoomList.get(roomId).readyStatus.length;i++)
         {
             if(RoomList.get(roomId).readyStatus[i] == false)
@@ -206,6 +227,42 @@ io.on('connection', (socket) => {       //접속시
                 pen.splice(randomNumber, 1)
             }
         }
+        else if (category == "instrument") {
+            for(var i = 0 ; i < 3 ; i++)
+            {
+                randomNumber = Math.floor(Math.random() * instrument.length);
+                words.push(instrument[randomNumber])
+
+                instrument.splice(randomNumber, 1)
+            }
+        }
+        else if (category == "food") {
+            for(var i = 0 ; i < 3 ; i++)
+            {
+                randomNumber = Math.floor(Math.random() * food.length);
+                words.push(food[randomNumber])
+
+                food.splice(randomNumber, 1)
+            }
+        }
+        else if (category == "electronics") {
+            for(var i = 0 ; i < 3 ; i++)
+            {
+                randomNumber = Math.floor(Math.random() * electronics.length);
+                words.push(electronics[randomNumber])
+
+                electronics.splice(randomNumber, 1)
+            }
+        }
+        else if (category == "sport") {
+            for(var i = 0 ; i < 3 ; i++)
+            {
+                randomNumber = Math.floor(Math.random() * sport.length);
+                words.push(sport[randomNumber])
+
+                sport.splice(randomNumber, 1)
+            }
+        }
 
         io.to(roomId).emit('setWords', words)
     })
@@ -226,6 +283,22 @@ io.on('connection', (socket) => {       //접속시
             {
                 pen.push(rowCells[1])
             }
+            else if(Math.floor(rowCells[0]/1000) == 3)
+            {
+                instrument.push(rowCells[1])
+            }
+            else if(Math.floor(rowCells[0]/1000) == 4)
+            {
+                food.push(rowCells[1])
+            }
+            else if(Math.floor(rowCells[0]/1000) == 5)
+            {
+                electronics.push(rowCells[1])
+            }
+            else if(Math.floor(rowCells[0]/1000) == 6)
+            {
+                sport.push(rowCells[1])
+            }
         }
     })
 
@@ -233,6 +306,7 @@ io.on('connection', (socket) => {       //접속시
         var removeIndex = RoomList.get(roomId).nicknames.indexOf(socket.nickname)
         RoomList.get(roomId).nicknames.splice(removeIndex, 1)     //addNick Map에서 해당 유저 nickName 제거
         RoomList.get(roomId).userScore.splice(removeIndex, 1)
+        RoomList.get(roomId).readyStatus.splice(removeIndex, 1)
         if(io.of('/').adapter.rooms.has(roomId)) {                                        //roomId가 존재하면 (남은 사람이 존재하여 방이 유지되면)
             io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames);    //남은 usercount와 nicknameArray를 제공
             io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공

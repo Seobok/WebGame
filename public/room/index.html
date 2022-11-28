@@ -266,6 +266,10 @@
                                         <option selected>리스트 목록</option>
                                         <option value="korean">한글</option>
                                         <option value="pen">학용품</option>
+                                        <option value="instrument">악기</option>
+                                        <option value="food">음식</option>
+                                        <option value="electronics">전자제품</option>
+                                        <option value="sport">운동</option>
                                     </select>
                                 </p>
                             </form>`
@@ -448,6 +452,23 @@
                    {
                         socket.emit('nextPlayer')
                    }
+                })
+
+                socket.on('changeReadyImage', (index, bool) => {
+                    var readyArray = document.getElementsByClassName("readyStatus")
+                    if(bool)
+                    {
+                        readyArray[index-1].innerHTML = "ready";
+                    }
+                    else
+                    {
+                        readyArray[index-1].innerHTML = "not ready";
+                    }
+                    
+                })
+
+                socket.on('requireMorePlayer', () => {
+                    alert("혼자서는 플레이할 수 없습니다!");
                 })
 
                 socket.on('message', (msg) => {
@@ -645,17 +666,17 @@
                             <tr height = "50px" style="background-color: white;">
                                 <td></td>
                                 <td class = "nicknames" style="font-size:20px;"></td>
-                                <td id="readyStatus" style="text-align:right;"></td>
+                                <td class="readyStatus" style="text-align:right;"></td>
                             </tr>
                             <tr height = "50px" style="background-color: white;">
                                 <td></td>
                                 <td class = "nicknames" style="font-size:20px;"></td>
-                                <td id="readyStatus" style="text-align:right;"></td>
+                                <td class="readyStatus" style="text-align:right;"></td>
                             </tr>
                             <tr height = "50px" style="background-color: white;">
                                 <td></td>
                                 <td class = "nicknames" style="font-size:20px;"></td>
-                                <td id="readyStatus" style="text-align:right;"></td>
+                                <td class="readyStatus" style="text-align:right;"></td>
                             </tr>
                         </table>
                     </td>
@@ -679,6 +700,10 @@
                                             <option selected>리스트 목록</option>
                                             <option value="korean">한글</option>
                                             <option value="pen">학용품</option>
+                                            <option value="instrument">악기</option>
+                                            <option value="food">음식</option>
+                                            <option value="electronics">전자제품</option>
+                                            <option value="sport">운동</option>
                                         </select>
                                     </p>
                                 </form>
@@ -688,8 +713,10 @@
                                     <p>
                                         <select name = 'category' onchange="changeValue(this)">
                                             <option selected>제한시간</option>
-                                            <option value="korean">30초</option>
-                                            <option value="pen">1분</option>
+                                            <option value="30sec">30초</option>
+                                            <option value="60sec">1분</option>
+                                            <option value="90sec">1분30초</option>
+                                            <option value="120sec">2분</option>
                                         </select>
                                     </p>
                                 </form>
@@ -701,7 +728,7 @@
                 <tr>
                     <td style="height: 80px;"></td>
                     <td></td>
-                    <td style="text-align:center; vertical-align:middle; border-style: solid;"><button id = 'startGame'></button></button></td>
+                    <td style="text-align:center; vertical-align:middle; border-style: solid;"><button id = 'startGame'></button></td>
                 </tr>
                 <tr style="height: 400px;">
                     <td colspan="3" style="border-style: solid; vertical-align: top;"><div id = 'waitingMsgs' style = "overflow: auto; width: inherit; height: 380px;"></div></td>
