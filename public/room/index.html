@@ -370,6 +370,17 @@
 
                         msginput.value = "";
                     };
+
+                    var waitingMsgForm = document.getElementById('waitingMsgForm');
+
+                    waitingMsgForm.onsubmit = (e) => {
+                        e.preventDefault();
+                        var msginput = document.getElementById('waitingMsgInput');
+
+                        socket.emit('message1', msginput.value);
+
+                        msginput.value = "";
+                    };
                     //<!--채팅 여기까지-->
                     
                     palettes = document.querySelectorAll(".palette")
@@ -416,11 +427,18 @@
                 })
 
                 socket.on('message', (msg) => {
-                        var messageList = document.getElementById('msgs');
-                        var messageTag = document.createElement("li");
-                        messageTag.innerText = msg;
-                        messageList.appendChild(messageTag);
-                    });
+                    var messageList = document.getElementById('msgs');
+                    var messageTag = document.createElement("li");
+                    messageTag.innerText = msg;
+                    messageList.appendChild(messageTag);
+                });
+
+                socket.on('message1', (msg) => {
+                    var messageList = document.getElementById('waitingMsgs');
+                    var messageTag = document.createElement("span");
+                    messageTag.innerText = msg;
+                    messageList.appendChild(messageTag);
+                });
 
                 socket.on('setWords', (list) => {
                     var words = document.getElementById('words');
@@ -566,14 +584,99 @@
             }
         </style>
     </head>
-    <body background = "background.png">
+    <body background = "background1.png">
+        <div><img src="title.png" style="width: 200px; height: 50px;"></div>
+        <center>
+            <table style="width:1040px; padding-top: 20px; padding-left: 20px; padding-right: 20px; background-color: white; margin-top: 40px; padding-bottom: 20px;">
+                <tr>
+                    <td style="width: 1px;">
+                        <table style="width: 680px; border-color:black; border-style:solid; vertical-align:middle;">
+                            <tr height = "50px" style="background-color: white;">
+                                <td width = "30px"><img src="crown.png" style="width: 30px; height: 30px"></td>
+                                <td style="font-size:20px;">닉네임 1</td>
+                                <td style="text-align:right;"></td>
+                            </tr>
+                            <tr height = "50px" style="background-color: white;">
+                                <td></td>
+                                <td style="font-size:20px;">닉네임 2</td>
+                                <td style="text-align:right;">ready</td>
+                            </tr>
+                            <tr height = "50px" style="background-color: white;">
+                                <td></td>
+                                <td style="font-size:20px;">닉네임 2</td>
+                                <td style="text-align:right;">ready</td>
+                            </tr>
+                            <tr height = "50px" style="background-color: white;">
+                                <td></td>
+                                <td style="font-size:20px;">닉네임 2</td>
+                                <td style="text-align:right;">ready</td>
+                            </tr>
+                        </table>
+                    </td>
+                    <td style="background-color:white; width: 20px;">
+                        
+                    </td>
+                    <td>
+                        <table style="border-color:black; border-style:solid; height: 215px; width: 300px; text-align: center;">
+                            <tr>
+                                <td colspan="2" style="text-align: right; vertical-align: top; height: 20px;">1/4</td>
+                            </tr>
+                            <tr style="vertical-align:bottom;">
+                                <td>카테고리</td>
+                                <td>시간제한</td>
+                            </tr>
+                            <tr style="vertical-align:top;">
+                                <td>
+                                    <form>
+                                    <p>
+                                        <select name = 'category' onchange="changeValue(this)">
+                                            <option selected>리스트 목록</option>
+                                            <option value="korean">한글</option>
+                                            <option value="pen">학용품</option>
+                                        </select>
+                                    </p>
+                                </form>
+                                </td>
+                                <td>
+                                    <form>
+                                    <p>
+                                        <select name = 'category' onchange="changeValue(this)">
+                                            <option selected>제한시간</option>
+                                            <option value="korean">30초</option>
+                                            <option value="pen">1분</option>
+                                        </select>
+                                    </p>
+                                </form>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height: 80px;"></td>
+                    <td></td>
+                    <td style="text-align:center; vertical-align:middle; border-style: solid;">게임시작</td>
+                </tr>
+                <tr style="height: 400px;">
+                    <td id = 'waitingMsgs'colspan="3" style="border-style: solid; vertical-align: top;">채팅창</td>
+                </tr>
+                <tr style = "height: 15px;">
+                    <td colspan="3" style="height: 20px; text-align:center; vertical-align:middle; border-style: solid;">
+                        <form id = 'waitingMsgForm'>
+                            <input id = 'waitingMsgInput'style = 'width: 900px;' autocomplete = 'off' type='text'>
+                            <input type = 'submit' value="채팅 입력">
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </center>
         <ul id = "waiting" type = "none">
-            <li id = "usercount"></li>
-            <li id = "nickname"></li>
-            <li id = "userlist"></li>
-            <li id = "roommaster"></li>
-            <li id = 'choiceWord'></li>
-            <li id = "gamestartbtn"></li>
-        </ul>        
+            <li id = "usercount">usercount</li>
+            <li id = "nickname">nickname</li>
+            <li id = "userlist">userlist</li>
+            <li id = "roommaster">roommaster</li>
+            <li id = 'choiceWord'>choiceWord</li>
+            <li id = "gamestartbtn">gamestartbtn</li>
+        </ul>
     </body>
 </html>

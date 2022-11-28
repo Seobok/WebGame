@@ -131,7 +131,11 @@ io.on('connection', (socket) => {       //접속시
             RoomList.get(roomId).answer=""
             nextPlayer();
         }
-        io.emit('message', msg);
+        io.to(roomId).emit('message', msg);
+    });
+
+    socket.on('message1', (msg) => {
+        io.emit('message1', msg);
     });
 
     socket.on('line', (data) => {
