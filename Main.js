@@ -47,6 +47,10 @@ app.post('/createRoom', (request, response) => {        //createRoom form에서 
     response.redirect('/room?roomId=' + id)
 })
 
+app.post('/joinRoom', (requset, response) => {
+    response.redirect('/roomlist')
+})
+
 app.listen(80, () => {});               //express 서버생성
 
 server.listen(52273);                   //socket 서버 생성
@@ -75,6 +79,7 @@ io.on('connection', (socket) => {       //접속시
             roomMaster : socket.roomMaster,
             userScore : [],
             category : "",
+            answer : "",
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
@@ -95,6 +100,17 @@ io.on('connection', (socket) => {       //접속시
 
     io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
 
+    function nextPlayer() {
+        const previousPlayer = RoomList.get(roomId).currnetPlayer
+        RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).currnetPlayerIndex - 1
+        if(RoomList.get(roomId).currnetPlayerIndex==-1)
+        {
+            RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
+        }
+        RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
+        io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)
+    }
+
     socket.on('roomMemberList', (roomId) => {                                                           //roomMemberList를 호출 시
         io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames) //userCount형태로 usercount와 nicknameArray를 제공 / 이후 분리가 필요해 보임
     })
@@ -106,17 +122,15 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('nextPlayer', () => {
-        const previousPlayer = RoomList.get(roomId).currnetPlayer
-        RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).currnetPlayerIndex - 1
-        if(RoomList.get(roomId).currnetPlayerIndex==-1)
-        {
-            RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
-        }
-        RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
-        io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)
+        nextPlayer();
     })
 
     socket.on('message', (msg) => {
+        if(msg != "" && msg == RoomList.get(roomId).answer)
+        {
+            RoomList.get(roomId).answer=""
+            nextPlayer();
+        }
         io.emit('message', msg);
     });
 
@@ -143,6 +157,7 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('choicedWord',(data) => {
+        RoomList.get(roomId).answer = data;
         socket.to(roomId).emit('choicedWord2', data)
     })
 

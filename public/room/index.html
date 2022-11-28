@@ -9,11 +9,11 @@
             var word;
             var draw_timer = null;
 
-            const changeValue = (target) => {
+            const changeValue = (target) => {       //카테고리 고르는 리스트 리스너
                 currentCategory = target.value;
             }
 
-            function sendCSV(data) {
+            function sendCSV(data) {                //CSV파일 서버로 전달
                 socket.emit('sendCSV', data)
             }
 
@@ -345,13 +345,6 @@
                     //<!--채팅-->
                     var msgform = document.getElementById('msgform');
 
-                    socket.on('message', (msg) => {
-                        var messageList = document.getElementById('msgs');
-                        var messageTag = document.createElement("li");
-                        messageTag.innerText = msg;
-                        messageList.appendChild(messageTag);
-                    });
-
                     msgform.onsubmit = (e) => {
                         e.preventDefault();
                         var msginput = document.getElementById('msginput');
@@ -404,6 +397,13 @@
                         socket.emit('nextPlayer')
                    }
                 })
+
+                socket.on('message', (msg) => {
+                        var messageList = document.getElementById('msgs');
+                        var messageTag = document.createElement("li");
+                        messageTag.innerText = msg;
+                        messageList.appendChild(messageTag);
+                    });
 
                 socket.on('setWords', (list) => {
                     var words = document.getElementById('words');
