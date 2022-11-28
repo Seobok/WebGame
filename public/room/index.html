@@ -8,6 +8,8 @@
             var curPlayer;
             var word;
             var draw_timer = null;
+            var remainTime;
+            var score = 0;
 
             const changeValue = (target) => {       //카테고리 고르는 리스트 리스너
                 currentCategory = target.value;
@@ -120,6 +122,7 @@
                     console.log('타이머 실행2')
 
                     draw_timer = setInterval(function(){
+                        this.remainTime = time;
                         time--;
 
                         min = Math.floor(time/60);
@@ -368,7 +371,7 @@
                         e.preventDefault();
                         var msginput = document.getElementById('msginput');
 
-                        socket.emit('message', msginput.value);
+                        socket.emit('message', msginput.value, remainTime);
 
                         msginput.value = "";
                     };
@@ -423,6 +426,11 @@
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
                 });
+
+                socket.on('calScore', (curScore) => {
+                    this.score = curScore;
+                    console.log(curScore)
+                })
 
                 var waitingMsgForm = document.getElementById('waitingMsgForm');
                 waitingMsgForm.onsubmit = (e) => {
@@ -666,7 +674,7 @@
                     <td style="text-align:center; vertical-align:middle; border-style: solid;">게임시작</td>
                 </tr>
                 <tr style="height: 400px;">
-                    <td id = 'waitingMsgs'colspan="3" style="border-style: solid; vertical-align: top;">채팅창</td>
+                    <td colspan="3" style="border-style: solid; vertical-align: top;"><div id = 'waitingMsgs' style = "overflow: auto; width: inherit; height: 380px;"></div></td>
                 </tr>
                 <tr style = "height: 15px;">
                     <td colspan="3" style="height: 20px; text-align:center; vertical-align:middle; border-style: solid;">

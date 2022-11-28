@@ -1,4 +1,5 @@
 const express = require('express');
+const { get } = require('http');
 
 function generateSerial() {     //방 시리얼 넘버 생성
     var chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -125,12 +126,15 @@ io.on('connection', (socket) => {       //접속시
         nextPlayer();
     })
 
-    socket.on('message', (msg) => {
+    socket.on('message', (msg, time) => {
         if(msg != "" && msg == RoomList.get(roomId).answer && socket.nickname != RoomList.get(roomId).currnetPlayer)
         {
-            RoomList.get(roomId).answer=""
+            var addScore = Math.floor(time/10)*10;
+            RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] += addScore;            
+            socket.emit('calScore', RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)]);
+            RoomList.get(roomId).answer = ""
             nextPlayer();
-        }
+        }        
         io.to(roomId).emit('message', msg);
     });
 
