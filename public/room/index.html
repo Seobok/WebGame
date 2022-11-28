@@ -205,6 +205,7 @@
                     }
                 , 1000);
                 }
+
                 //<!-- 여기 까지 -->
 
                 socket.emit('roomMemberList', id)
@@ -423,9 +424,19 @@
                     messageList.appendChild(messageTag);
                 });
 
-                socket.on('message1', (msg) => {
+                var waitingMsgForm = document.getElementById('waitingMsgForm');
+                waitingMsgForm.onsubmit = (e) => {
+                    e.preventDefault();
+                    var msginput = document.getElementById('waitingMsgInput');
+
+                    socket.emit('waitingroomMessage', msginput.value);
+
+                    msginput.value = "";
+                };
+
+                socket.on('waitingroomMessage', (msg) => {
                     var messageList = document.getElementById('waitingMsgs');
-                    var messageTag = document.createElement("span");
+                    var messageTag = document.createElement("p");
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
                 });
@@ -600,12 +611,12 @@
                             </tr>
                             <tr height = "50px" style="background-color: white;">
                                 <td></td>
-                                <td style="font-size:20px;">닉네임 2</td>
+                                <td style="font-size:20px;">닉네임 3</td>
                                 <td style="text-align:right;">ready</td>
                             </tr>
                             <tr height = "50px" style="background-color: white;">
                                 <td></td>
-                                <td style="font-size:20px;">닉네임 2</td>
+                                <td style="font-size:20px;">닉네임 4</td>
                                 <td style="text-align:right;">ready</td>
                             </tr>
                         </table>
