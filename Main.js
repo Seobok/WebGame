@@ -79,6 +79,7 @@ io.on('connection', (socket) => {       //접속시
             currnetPlayerIndex : 0,
             roomMaster : socket.roomMaster,
             userScore : [],
+            readyStatus : [],
             category : "",
             answer : "",
         });                                                                     //addNick Map에 roomId 추가
@@ -93,6 +94,7 @@ io.on('connection', (socket) => {       //접속시
    
     RoomList.get(roomId).nicknames.push(socket.nickname)                                   //생성되어있는 방에 닉네임 추가
     RoomList.get(roomId).userScore.push(0)
+    RoomList.get(roomId).readyStatus.push(false)
 
     if(RoomList.get(roomId).nicknames.length > 4)
     {
@@ -137,6 +139,19 @@ io.on('connection', (socket) => {       //접속시
         }        
         io.to(roomId).emit('message', msg);
     });
+
+    socket.on('changeReady', (ready) => {
+        var allReady = true;
+        RoomList.get(roomId).readyStatus[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] = ready
+        for(let i=1;i<RoomList.get(roomId).readyStatus.length;i++)
+        {
+            if(RoomList.get(roomId).readyStatus[i] == false)
+            {
+                allReady = false;
+            }
+        }
+        socket.to(roomId).emit('checkReady', allReady);
+    })
 
     socket.on('waitingroomMessage', (msg) => {
         io.emit('waitingroomMessage', msg);
