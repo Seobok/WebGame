@@ -134,8 +134,8 @@ io.on('connection', (socket) => {       //접속시
         io.to(roomId).emit('message', msg);
     });
 
-    socket.on('message1', (msg) => {
-        io.emit('message1', msg);
+    socket.on('waitingroomMessage', (msg) => {
+        io.emit('waitingroomMessage', msg);
     });
 
     socket.on('line', (data) => {
