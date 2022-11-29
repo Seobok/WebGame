@@ -126,7 +126,6 @@
 
                 function drawTimer(time, obj){
                     var min, sec;
-                    console.log('타이머 실행2')
 
                     draw_timer = setInterval(function(){
                         this.remainTime = time;
@@ -164,7 +163,6 @@
 
                 function choiceWordTimer(time, obj, list, wordTimer){
                     var min, sec;
-                    console.log('타이머 실행')
 
                     var timer = setInterval(function(){
                         time--;
@@ -222,27 +220,22 @@
                 })
 
                 socket.on('userCount', (count, nick) => {
-                    if(document.getElementById('usercount'))
-                    {
-                        var userCounter = document.getElementById('usercount');
-                        var nicknames = document.getElementsByClassName('nicknames')
-                        var output = '';
-                        userCounter.innerHTML = count + " / 4 ";
-                        for(let i =0; i<nick.length;i++) {
-                            nicknames[i].innerHTML = nick[i] 
-                            console.log(this.nickname,  nick[i])
-                            if(this.nickname == nick[i])
-                            {
-                                nicknames[i].style.border = "5px solid red";
-                            }
+                    var userCounter = document.getElementById('usercount');
+                    var nicknames = document.getElementsByClassName('nicknames')
+                    var output = '';
+                    userCounter.innerHTML = count + " / 4 ";
+                    for(let i =0; i<nick.length;i++) {
+                        nicknames[i].innerHTML = nick[i] 
+                        console.log(this.nickname,  nick[i])
+                        if(this.nickname == nick[i])
+                        {
+                            nicknames[i].style.border = "5px solid red";
                         }
-                    }                    
+                    }                                        
                 })
 
                 socket.on('userNick', (nickname) => {
                     this.nickname = nickname
-                    var userNickname = document.getElementById('nickname');
-                    userNickname.innerHTML = "현재 당신의 닉네임 : " + this.nickname;
                 })
 
                 socket.on('checkReady', (Ready) => {
@@ -254,46 +247,40 @@
                     this.roomMaster = false
                     if(this.nickname == name)
                         roomMaster = true;
-                    if(document.getElementById('roommaster'))
-                    {
-                        var chkroomMaster = document.getElementById('roommaster');
-                        var choiceWord = document.getElementById('choiceWord');
-                        var showButton = document.getElementById('startGame')
 
-                        chkroomMaster.innerHTML = "방장? : " + roomMaster;
+                    var showButton = document.getElementById('startGame')
 
-                        if(roomMaster) {
-                            showButton.innerHTML = '게임 시작'
-                            showButton.onclick  = function() {
-                                if((currentCategory != 'notChoice') && (currentTime != 0) && (allReady == true)) 
-                                {
-                                    socket.emit('gameStart')                                   
-                                }
-                            }
-                        }
-                        else
-                        {
-                            var nonVisible= document.getElementsByClassName('nonVisible');
-
-                            for(let i = 0; i < nonVisible.length; i++)
+                    if(roomMaster) {
+                        showButton.innerHTML = '게임 시작'
+                        showButton.onclick  = function() {
+                            if((currentCategory != 'notChoice') && (currentTime != 0) && (allReady == true)) 
                             {
-                                nonVisible[i].innerHTML = '';
-                            }
-
-                            showButton.innerHTML = '준 비'
-                            showButton.onclick = function() {
-                                if(ready == false)
-                                {
-                                    ready = true;
-                                }
-                                else
-                                {
-                                    ready = false;
-                                }
-                                socket.emit('changeReady', ready);
+                                socket.emit('gameStart')                                   
                             }
                         }
                     }
+                    else
+                    {
+                        var nonVisible= document.getElementsByClassName('nonVisible');
+
+                        for(let i = 0; i < nonVisible.length; i++)
+                        {
+                            nonVisible[i].innerHTML = '';
+                        }
+
+                        showButton.innerHTML = '준 비'
+                        showButton.onclick = function() {
+                            if(ready == false)
+                            {
+                                ready = true;
+                            }
+                            else
+                            {
+                                ready = false;
+                            }
+                            socket.emit('changeReady', ready);
+                        }
+                    }                    
                 })
 
                 socket.on('roomListClear', () => {
@@ -382,8 +369,8 @@
                         </table>
                     </div>
                     <button id='nextPlayer'>다음사람</button>
-                    <ul id='msgs' type = 'none'>
-                    </ul>
+                    <div id='msgs' type = 'none'>
+                    </div>
                     <form id = 'msgform'>
                         <input id ='msginput' autocomplete = 'off' type='text'>
                         <button type = 'submit'>입력</button>    
@@ -392,16 +379,16 @@
                     <div class = "popup_layer" id="popup_layer" style="display: none;">
                         <div class="popup_box">
                             <center>
-                                <table style="width:900px; padding: 0px; background-color: white; margin: 0px; font-size: 70px">
+                                <table style="width:900px; padding: 0px; background-color: white; margin: 0px;">
                                     <tr>
                                         <td>
-                                            <button class = 'word'></button>
+                                            <button class = 'word' style = "font-size: 70px"></button>
                                         </td>
                                         <td>
-                                            <button class = 'word'></button>
+                                            <button class = 'word' style = "font-size: 70px"></button>
                                         </td>
                                         <td>
-                                            <button class = 'word'></button>
+                                            <button class = 'word' style = "font-size: 70px"></button>
                                         </td>
                                     </tr>
                                 </table>
@@ -487,7 +474,7 @@
 
                 socket.on('message', (msg) => {
                     var messageList = document.getElementById('msgs');
-                    var messageTag = document.createElement("li");
+                    var messageTag = document.createElement("p");
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
                 });
@@ -709,7 +696,7 @@
                     <td>
                         <table style="border-color:black; border-style:solid; height: 215px; width: 300px; text-align: center;">
                             <tr>
-                                <td colspan="2" id = 'usercount' style="text-align: right; vertical-align: top; height: 20px;">1/4</td>
+                                <td colspan="2" id = 'usercount' style="text-align: right; vertical-align: top; height: 20px;"></td>
                             </tr>
                             <tr style="vertical-align:bottom;">
                                 <td class = 'nonVisible'>카테고리</td>
@@ -766,12 +753,5 @@
                 </tr>
             </table>
         </center>
-        <ul id = "waiting" type = "none">
-            <li id = "usercount">usercount</li>
-            <li id = "nickname">nickname</li>
-            <li id = "roommaster">roommaster</li>
-            <li id = 'choiceWord'>choiceWord</li>
-            <li id = "gamestartbtn">gamestartbtn</li>
-        </ul>
     </body>
 </html>
