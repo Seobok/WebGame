@@ -108,6 +108,11 @@ io.on('connection', (socket) => {       //접속시
 
     io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);               //사람이 들어올때 마다 roomMaster에 대한 정보 제공
 
+    for(let i = 1 ; i < RoomList.get(roomId).readyStatus.length; i++)
+    {
+        io.to(roomId).emit('changeReadyImage', i, RoomList.get(roomId).readyStatus[i])
+    }
+
     function nextPlayer() {
         const previousPlayer = RoomList.get(roomId).currnetPlayer
         RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).currnetPlayerIndex - 1
@@ -308,8 +313,14 @@ io.on('connection', (socket) => {       //접속시
         RoomList.get(roomId).userScore.splice(removeIndex, 1)
         RoomList.get(roomId).readyStatus.splice(removeIndex, 1)
         if(io.of('/').adapter.rooms.has(roomId)) {                                        //roomId가 존재하면 (남은 사람이 존재하여 방이 유지되면)
+            io.to(roomId).emit('roomListClear')
             io.to(roomId).emit('userCount', io.of('/').adapter.rooms.get(roomId).size, RoomList.get(roomId).nicknames);    //남은 usercount와 nicknameArray를 제공
             io.to(roomId).emit('findRoomMaster', RoomList.get(roomId).nicknames[0]);                   //변경되었을 수 있기 때문에 roomMaster에 대한 정보 다시 제공
+            for(let i = 1 ; i < RoomList.get(roomId).readyStatus.length; i++)
+            {
+                io.to(roomId).emit('changeReadyImage', i, RoomList.get(roomId).readyStatus[i])
+            }
+
         }
         else {                                                                          //남은 사람이 존재하지 않는다면
             RoomList.delete(roomId)                                                      //roomId 제거

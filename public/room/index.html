@@ -223,14 +223,17 @@
                     if(document.getElementById('usercount'))
                     {
                         var userCounter = document.getElementById('usercount');
-                        var userList = document.getElementById('userlist');
                         var nicknames = document.getElementsByClassName('nicknames')
                         var output = '';
                         userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
                         for(let i =0; i<nick.length;i++) {
                             nicknames[i].innerHTML = nick[i] 
+                            console.log(this.nickname,  nick[i])
+                            if(this.nickname == nick[i])
+                            {
+                                nicknames[i].style.border = "5px solid red";
+                            }
                         }
-                        userList.innerHTML = output
                     }                    
                 })
 
@@ -257,29 +260,7 @@
                         chkroomMaster.innerHTML = "방장? : " + roomMaster;
 
                         if(roomMaster) {
-                            // var gamestartbtntext = document.getElementById('gamestartbtn');
-                            // gamestartbtntext.innerHTML = "<button id='startbtn'>게임시작</button>"
-                            choiceWord.innerHTML = `
-                            <form>
-                                <p>
-                                    <select name = 'category' onchange="changeValue(this)">
-                                        <option selected>리스트 목록</option>
-                                        <option value="korean">한글</option>
-                                        <option value="pen">학용품</option>
-                                        <option value="instrument">악기</option>
-                                        <option value="food">음식</option>
-                                        <option value="electronics">전자제품</option>
-                                        <option value="sport">운동</option>
-                                    </select>
-                                </p>
-                            </form>`
                             showButton.innerHTML = '게임 시작'
-                            // var startbtn = document.getElementById('startbtn')
-                            // startbtn.onclick = function() {
-                            //     if(currentCategory != 'notChoice') {
-                            //         socket.emit('gameStart')
-                            //     }
-                            // }
                             showButton.onclick  = function() {
                                 if((currentCategory != 'notChoice') && allReady) 
                                 {
@@ -302,6 +283,21 @@
                                 socket.emit('changeReady', ready);
                             }
                         }
+                    }
+                })
+
+                socket.on('roomListClear', () => {
+                    var readyArray = document.getElementsByClassName("readyStatus")
+                    for(array of readyArray)
+                    {
+                        array.innerHTML = ""
+                    }
+
+                    var nicknames = document.getElementsByClassName('nicknames')
+                    for(nickA of nicknames)
+                    {
+                        nickA.innerHTML = ""
+                        nickA.style.border = "1px none"
                     }
                 })
 
@@ -464,7 +460,6 @@
                     {
                         readyArray[index-1].innerHTML = "not ready";
                     }
-                    
                 })
 
                 socket.on('requireMorePlayer', () => {
@@ -746,7 +741,6 @@
         <ul id = "waiting" type = "none">
             <li id = "usercount">usercount</li>
             <li id = "nickname">nickname</li>
-            <li id = "userlist">userlist</li>
             <li id = "roommaster">roommaster</li>
             <li id = 'choiceWord'>choiceWord</li>
             <li id = "gamestartbtn">gamestartbtn</li>
