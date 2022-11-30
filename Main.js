@@ -1,5 +1,6 @@
 const express = require('express');
 const { get } = require('http');
+const bodyParser = require('body-parser');
 
 function generateSerial() {     //방 시리얼 넘버 생성
     var chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -42,14 +43,39 @@ const io = require('socket.io')(server, {
     }});
 
 app.use(express.static('public'))       //서버생성시 public에 있는 index를 띄움
+app.use(bodyParser.urlencoded({extended : true}));
+app.use(bodyParser.json());
 
 app.post('/createRoom', (request, response) => {        //createRoom form에서 호출 받으면 랜덤 roomId를 query형태로 넘김
     id = generateSerial()
-    response.redirect('/room?roomId=' + id)
+    getroomName = request.body.roomName
+    getcategory = request.body.category
+    gettimeout = request.body.timeout
+    response.redirect('/room?roomId='+id+'&roomName='+getroomName+'&category='+getcategory+'&timeout='+gettimeout)
 })
 
 app.post('/joinRoom', (requset, response) => {
-    response.redirect('/roomlist')
+    response.send(`
+    <!DOCTYPE html>
+    <head>
+        <script>
+            window.onload = function(){
+                test = document.getElementById("test")
+                test.onclick = function(){
+                    alert("test")
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <table style="border: 1px solid;">
+            <tr id="test">
+                <td>123123</td>
+                <td>123123123</td>
+                <td>123123123123</td>
+            </tr>
+        </table>
+    </body>`)
 })
 
 app.listen(80, () => {});               //express 서버생성
@@ -61,6 +87,8 @@ var RoomList = new Map();                //Nickname을 저장하는 배열 <room
 io.on('connection', (socket) => {       //접속시
     const roomId = socket.handshake.query.roomId;
     const userId = socket.id;
+
+    console.log(socket.handshake.query.roomName, socket.handshake.query.category, socket.handshake.query.timeout)
 
     korean = new Array();
     pen = new Array();
@@ -78,6 +106,7 @@ io.on('connection', (socket) => {       //접속시
 
     if(!RoomList.has(roomId)) {                                                  //방이 존재하지 않는다면 (처음 들어왔다면)
         RoomList.set(roomId, {
+            roomName : "",
             nicknames : [],
             currnetPlayer : "",
             currnetPlayerIndex : 0,
@@ -85,11 +114,16 @@ io.on('connection', (socket) => {       //접속시
             userScore : [],
             readyStatus : [],
             category : "",
+            timeout: 0,
             answer : "",
             round : 0,
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
+
+    RoomList.get(roomId).roomName = socket.handshake.query.roomName
+    RoomList.get(roomId).category = socket.handshake.query.category
+    RoomList.get(roomId).timeout = Number(socket.handshake.query.timeout)
 
     while(RoomList.get(roomId).nicknames.indexOf(socket.nickname) >= 0)
     {

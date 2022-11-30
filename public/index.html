@@ -3,27 +3,105 @@
     <head>
         <script>
             window.onload = function() {
-                startbtn = document.querySelector('#btn')
+                startbtn = document.querySelectorAll('#btn')
                 startbtn.onmousedown = function() {
                     startbtn.src = "after_btn.png"
                 }
                 startbtn.onmouseup = function() {
                     startbtn.src = "before_btn.png"
                 }
+
+                createRoomBtn = document.getElementById("createRoomBtn")
+                createRoomBtn.onclick = function(){
+                    document.getElementById("popup_layer").style.display = "block";
+                }
             }
         </script>
+        <style>
+            .popup_box{
+                position: relative;
+                top:50%;
+                left:50%; 
+                overflow: auto; 
+                height: 600px; 
+                width:500px;
+                transform:translate(-50%, -50%);
+                z-index:1002;
+                box-sizing:border-box;
+                background:#fff;
+                box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+                -webkit-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+                -moz-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+            }
+        </style>
     </head>
     <body background="background.png">
         <div style="text-align: center;" width = "window.width"><img src="title.png" width="800" height="240" ></img></div>
         <div style="text-align: center;">
-            <form action="./createRoom" method="post">
-                <input type="image" src="before_btn.png" width="200" height="100", id="btn">
-            </form>
+            <button id="createRoomBtn"><img src="before_btn.png" width="200" height="100" id="btn"></button>
         </div>
         <div style="text-align: center;">
             <form action="./joinRoom" method="post">
-                <input type="image" src="before_btn.png" width="200" height="100", id="btn">
+                <input type="image" src="before_btn.png" width="200" height="100" id="btn">
             </form>
         </div>
+
+        <div class = "popup_layer" id="popup_layer" style="display: none;">
+            <div class="popup_box">
+                <div class="popup_cont">
+                    <div id = "words">
+                        <form action="/createRoom" method="post">
+                            <center>
+                                <table>
+                                    <tr>
+                                        <td style="vertical-align:bottom; height: 100px;">
+                                            방이름
+                                        </td>
+                                        <td>
+                                            <input name="roomName" type="text" style="margin-top: 150px;" required>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height: 100px;">
+                                            리스트 목록
+                                        </td>
+                                        <td>
+                                            <select name="category" required>
+                                                <option value="korean">한글</option>
+                                                <option value="pen">학용품</option>
+                                                <option value="instrument">악기</option>
+                                                <option value="food">음식</option>
+                                                <option value="electronics">전자제품</option>
+                                                <option value="sport">운동</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="height: 100px;">
+                                            제한시간
+                                        </td>
+                                        <td>
+                                            <select name="timeout" required>
+                                                <option value="30">30초</option>
+                                                <option value="60">1분</option>
+                                                <option value="90">1분30초</option>
+                                                <option value="120">2분</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align:center; height: 100px;" colspan="2">
+                                            <input type="submit" src="before_btn.png" width="200" height="100" id="btn">
+                                        </td>
+                                    </tr>
+                                </table>
+                            </center>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        
     </body>
 </html>

@@ -35,7 +35,10 @@
                 
                 socket = io('localhost:52273',{
                     query: {
-                        roomId : id
+                        roomId : id,
+                        roomName : params.get('roomName'),
+                        category : params.get('category'),
+                        timeout : params.get('timeout')
                     }
                 });
 
@@ -383,7 +386,7 @@
                             <div class="popup_cont">
                                 <div id = "words">
                                     <button class = 'word'></button>
-                                    <button class = 'word'></button> 
+                                    <button class = 'word'></button>
                                     <button class = 'word'></button>
                                 </div>
                             </div>
@@ -692,7 +695,6 @@
                                     <form>
                                     <p>
                                         <select name = 'category' onchange="changeValue(this)">
-                                            <option selected>리스트 목록</option>
                                             <option value="korean">한글</option>
                                             <option value="pen">학용품</option>
                                             <option value="instrument">악기</option>
@@ -707,7 +709,6 @@
                                     <form>
                                     <p>
                                         <select name = 'category' onchange="changeValue(this)">
-                                            <option selected>제한시간</option>
                                             <option value="30sec">30초</option>
                                             <option value="60sec">1분</option>
                                             <option value="90sec">1분30초</option>

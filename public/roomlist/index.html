@@ -1,7 +1,23 @@
 <!DOCTYPE html>
 <head>
-
+    <script>
+        window.onload = function(){
+            roomNames = document.getElementsByClassName("roomName")
+            userCounts = document.getElementsByClassName("userCount")
+            categories = document.getElementsByClassName("category")
+            test = document.getElementById("test")
+            test.onclick = function(){
+                alert("test")
+            }
+        }
+    </script>
 </head>
 <body>
-    hello
+    <table style="border: 1px solid;">
+        <tr id="test">
+            <td class="roomName"></td>
+            <td class="userCount"></td>
+            <td class="category"></td>
+        </tr>
+    </table>
 </body>
