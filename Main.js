@@ -210,7 +210,7 @@ io.on('connection', (socket) => {       //접속시
                 allReady = false;
             }
         }
-        socket.to(roomId).emit('checkReady', allReady);
+        io.to(roomId).emit('checkReady', allReady);
     })
 
     socket.on('waitingroomMessage', (msg) => {
@@ -233,10 +233,10 @@ io.on('connection', (socket) => {       //접속시
         socket.to(roomId).emit('clear')
     })
 
-    socket.on('wordCategory', (data) => {
+    socket.on('wordCategory', (data, time) => {
         RoomList.get(roomId).category = data
         
-        socket.to(roomId).emit('wordList', data);
+        socket.to(roomId).emit('wordList', data, time);
     })
 
     socket.on('choicedWord',(data) => {

@@ -5,6 +5,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script>
             var currentCategory = 'notChoice';
+            var currentTime = 0;
             var curPlayer;
             var word;
             var draw_timer = null;
@@ -13,8 +14,12 @@
             var ready = false;
             var allReady = true;
 
-            const changeValue = (target) => {       //카테고리 고르는 리스트 리스너
+            const changeCategory = (target) => {       //카테고리 고르는 리스트 리스너
                 currentCategory = target.value;
+            }
+
+            const changeTimer = (target) => {
+                currentTime = parseInt(target.value);
             }
 
             function sendCSV(data) {                //CSV파일 서버로 전달
@@ -124,7 +129,6 @@
 
                 function drawTimer(time, obj){
                     var min, sec;
-                    console.log('타이머 실행2')
 
                     draw_timer = setInterval(function(){
                         this.remainTime = time;
@@ -162,7 +166,6 @@
 
                 function choiceWordTimer(time, obj, list, wordTimer){
                     var min, sec;
-                    console.log('타이머 실행')
 
                     var timer = setInterval(function(){
                         time--;
@@ -196,7 +199,6 @@
 
                         if(ts == 0) 
                         {
-                            var words = document.getElementById('words');
                             setTimeout(function(){
                                 clearInterval(timer)
                             }, 0)                            
@@ -207,8 +209,6 @@
                             console.log(word);
                             socket.emit('choicedWord', word);
                             socket.emit('wordChoiced')
-                            
-                            words.innerHTML = "";
                         }
                     }
                 , 1000);
@@ -223,70 +223,67 @@
                 })
 
                 socket.on('userCount', (count, nick) => {
-                    if(document.getElementById('usercount'))
-                    {
-                        var userCounter = document.getElementById('usercount');
-                        var nicknames = document.getElementsByClassName('nicknames')
-                        var output = '';
-                        userCounter.innerHTML = "현재 " + count + "명이 서버에 접속해있습니다." + '<br>';
-                        for(let i =0; i<nick.length;i++) {
-                            nicknames[i].innerHTML = nick[i] 
-                            console.log(this.nickname,  nick[i])
-                            if(this.nickname == nick[i])
-                            {
-                                nicknames[i].style.border = "5px solid red";
-                            }
+                    var userCounter = document.getElementById('usercount');
+                    var nicknames = document.getElementsByClassName('nicknames')
+                    var output = '';
+                    userCounter.innerHTML = count + " / 4 ";
+                    for(let i =0; i<nick.length;i++) {
+                        nicknames[i].innerHTML = nick[i] 
+                        console.log(this.nickname,  nick[i])
+                        if(this.nickname == nick[i])
+                        {
+                            nicknames[i].style.border = "5px solid red";
                         }
-                    }                    
+                    }                                        
                 })
 
                 socket.on('userNick', (nickname) => {
                     this.nickname = nickname
-                    var userNickname = document.getElementById('nickname');
-                    userNickname.innerHTML = "현재 당신의 닉네임 : " + this.nickname;
                 })
 
-                socket.on('checkReady', (allReady) => {
-                    this.allReady = allReady
+                socket.on('checkReady', (Ready) => {
+                    this.allReady = Ready
+                    console.log(allReady)
                 })
 
                 socket.on('findRoomMaster', (name) => {
                     this.roomMaster = false
                     if(this.nickname == name)
                         roomMaster = true;
-                    if(document.getElementById('roommaster'))
-                    {
-                        var chkroomMaster = document.getElementById('roommaster');
-                        var choiceWord = document.getElementById('choiceWord');
-                        var showButton = document.getElementById('startGame')
 
-                        chkroomMaster.innerHTML = "방장? : " + roomMaster;
+                    var showButton = document.getElementById('startGame')
 
-                        if(roomMaster) {
-                            showButton.innerHTML = '게임 시작'
-                            showButton.onclick  = function() {
-                                if((currentCategory != 'notChoice') && allReady) 
-                                {
-                                    socket.emit('gameStart')                                   
-                                }
-                            }
-                        }
-                        else
-                        {
-                            showButton.innerHTML = '준 비'
-                            showButton.onclick = function() {
-                                if(ready == false)
-                                {
-                                    ready = true;
-                                }
-                                else
-                                {
-                                    ready = false;
-                                }
-                                socket.emit('changeReady', ready);
+                    if(roomMaster) {
+                        showButton.innerHTML = '게임 시작'
+                        showButton.onclick  = function() {
+                            if((currentCategory != 'notChoice') && (currentTime != 0) && (allReady == true)) 
+                            {
+                                socket.emit('gameStart')                                   
                             }
                         }
                     }
+                    else
+                    {
+                        var nonVisible= document.getElementsByClassName('nonVisible');
+
+                        for(let i = 0; i < nonVisible.length; i++)
+                        {
+                            nonVisible[i].innerHTML = '';
+                        }
+
+                        showButton.innerHTML = '준 비'
+                        showButton.onclick = function() {
+                            if(ready == false)
+                            {
+                                ready = true;
+                            }
+                            else
+                            {
+                                ready = false;
+                            }
+                            socket.emit('changeReady', ready);
+                        }
+                    }                    
                 })
 
                 socket.on('roomListClear', () => {
@@ -317,13 +314,15 @@
                     clear_canvas();
                 })
 
-                socket.on('wordList', (data) => {
+                socket.on('wordList', (data, time) => {
                     currentCategory = data;
+                    currentTime = time
                 })
 
                 socket.on('setBrowser', (currentPlayer) => {
-                    if(currentCategory != 'notChoice') {
-                        socket.emit('wordCategory', currentCategory);
+                    if(currentCategory != 'notChoice')
+                    {
+                        socket.emit('wordCategory', currentCategory, currentTime);
                     }
 
                     document.body.innerHTML = `
@@ -373,23 +372,30 @@
                         </table>
                     </div>
                     <button id='nextPlayer'>다음사람</button>
-                    <ul id='msgs' type = 'none'>
-                    </ul>
+                    <div id='msgs' type = 'none'>
+                    </div>
                     <form id = 'msgform'>
                         <input id ='msginput' autocomplete = 'off' type='text'>
                         <button type = 'submit'>입력</button>    
                     </form>
-                    <div id='words'></div>
                     <div id ='timer'></div>
                     <div class = "popup_layer" id="popup_layer" style="display: none;">
                         <div class="popup_box">
-                            <div class="popup_cont">
-                                <div id = "words">
-                                    <button class = 'word'></button>
-                                    <button class = 'word'></button>
-                                    <button class = 'word'></button>
-                                </div>
-                            </div>
+                            <center>
+                                <table style="width:900px; padding: 0px; background-color: white; margin: 0px;">
+                                    <tr>
+                                        <td>
+                                            <button class = 'word' style = "font-size: 70px"></button>
+                                        </td>
+                                        <td>
+                                            <button class = 'word' style = "font-size: 70px"></button>
+                                        </td>
+                                        <td>
+                                            <button class = 'word' style = "font-size: 70px"></button>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </center>
                         </div>
                     </div>`
 
@@ -471,7 +477,7 @@
 
                 socket.on('message', (msg) => {
                     var messageList = document.getElementById('msgs');
-                    var messageTag = document.createElement("li");
+                    var messageTag = document.createElement("p");
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
                 });
@@ -499,10 +505,7 @@
                 });
 
                 socket.on('setWords', (list) => {
-                    var words = document.getElementById('words');
-                    var wordClass = document.getElementsByClassName('word');
-
-                    
+                    var wordClass = document.getElementsByClassName('word');                    
 
                     word = undefined;
 
@@ -528,10 +531,8 @@
                             word = wordClass[i].innerText;
                             console.log(word);
                             socket.emit('choicedWord', word);
-                            var words = document.getElementById('words');
-                            words.innerHTML=""
                             closePop()
-                            drawTimer(150, timer);
+                            drawTimer(currentTime, timer);
                         }
                     }
                 })
@@ -543,7 +544,7 @@
 
                 socket.on('wordChoiced2', () => {
                     var timer = document.getElementById('timer');
-                    drawTimer(150, timer)
+                    drawTimer(currentTime, timer)
                 })
 
                 socket.on('next', (previousPlayer, currentPlayer) => {
@@ -561,9 +562,6 @@
 
                     if(this.nickname == previousPlayer)
                     {
-                        var words = document.getElementById('words');
-                        words.innerHTML="";
-
                         canvas.removeEventListener("touchstart", start)
                         canvas.removeEventListener("touchmove", draw);
                         canvas.removeEventListener("mousedown", start)
@@ -637,8 +635,8 @@
                 top:50%;
                 left:50%; 
                 overflow: auto; 
-                height: 600px; 
-                width:375px;
+                height: 220px; 
+                width:1200px;
                 transform:translate(-50%, -120%);
                 z-index:1002;
                 box-sizing:border-box;
@@ -646,6 +644,23 @@
                 box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
                 -webkit-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
                 -moz-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+            }
+            .popup_box tr{
+                height: 200px;
+                padding: 0px;
+                margin: 0px;
+            }
+            .popup_box td{
+                width: inherit;
+                padding: 0px;
+                margin: 0px;
+            }
+
+            .word{
+                height: 100px;
+                width: 300px;
+                padding: 0px;
+                margin: 0px;
             }
         </style>
     </head>
@@ -684,17 +699,18 @@
                     <td>
                         <table style="border-color:black; border-style:solid; height: 215px; width: 300px; text-align: center;">
                             <tr>
-                                <td colspan="2" style="text-align: right; vertical-align: top; height: 20px;">1/4</td>
+                                <td colspan="2" id = 'usercount' style="text-align: right; vertical-align: top; height: 20px;"></td>
                             </tr>
                             <tr style="vertical-align:bottom;">
-                                <td>카테고리</td>
-                                <td>시간제한</td>
+                                <td class = 'nonVisible'>카테고리</td>
+                                <td class = 'nonVisible'>시간제한</td>
                             </tr>
                             <tr style="vertical-align:top;">
                                 <td>
-                                    <form>
+                                    <form class = 'nonVisible'>
                                     <p>
-                                        <select name = 'category' onchange="changeValue(this)">
+                                        <select onchange="changeCategory(this)">
+                                            <option selected>리스트 목록</option>
                                             <option value="korean">한글</option>
                                             <option value="pen">학용품</option>
                                             <option value="instrument">악기</option>
@@ -706,9 +722,10 @@
                                 </form>
                                 </td>
                                 <td>
-                                    <form>
+                                    <form class = 'nonVisible'>
                                     <p>
-                                        <select name = 'category' onchange="changeValue(this)">
+                                        <select onchange="changeTimer(this)">
+                                            <option selected>제한시간</option>
                                             <option value="30sec">30초</option>
                                             <option value="60sec">1분</option>
                                             <option value="90sec">1분30초</option>
@@ -739,12 +756,5 @@
                 </tr>
             </table>
         </center>
-        <ul id = "waiting" type = "none">
-            <li id = "usercount">usercount</li>
-            <li id = "nickname">nickname</li>
-            <li id = "roommaster">roommaster</li>
-            <li id = 'choiceWord'>choiceWord</li>
-            <li id = "gamestartbtn">gamestartbtn</li>
-        </ul>
     </body>
 </html>
