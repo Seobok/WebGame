@@ -216,16 +216,29 @@ io.on('connection', (socket) => {       //접속시
         nextPlayer();
     })
 
+    socket.on('timeOutNextPlayer', () => {
+        io.to(roomId).emit('message', '시간 초과!! 정답은 ' + RoomList.get(roomId).answer + '입니다!!');
+        RoomList.get(roomId).answer = ""
+        if(RoomList.get(roomId).currnetPlayer == socket.nickname)
+        {
+            nextPlayer();
+        }     
+    })
+
     socket.on('message', (msg, time) => {
-        if(msg != "" && msg == RoomList.get(roomId).answer && socket.nickname != RoomList.get(roomId).currnetPlayer)
+        if((msg != "") && (msg == RoomList.get(roomId).answer) && (socket.nickname != RoomList.get(roomId).currnetPlayer))
         {
             var addScore = Math.floor(time/10)*10;
             RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] += addScore;            
             socket.emit('calScore', RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)]);
+            io.to(roomId).emit('message', RoomList.get(roomId).answer + '!!! 정답입니다!!');
             RoomList.get(roomId).answer = ""
             nextPlayer();
+        }
+        else
+        {
+            io.to(roomId).emit('message', msg);
         }        
-        io.to(roomId).emit('message', msg);
     });
 
     socket.on('changeCategory', (currentCategory) => {
