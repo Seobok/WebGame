@@ -194,6 +194,7 @@ io.on('connection', (socket) => {       //접속시
         {
             RoomList.get(roomId).round++;
             RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
+            io.to(roomId).emit('changeRound', RoomList.get(roomId).round)
         }
         if(RoomList.get(roomId).round == 3)
         {
@@ -238,17 +239,24 @@ io.on('connection', (socket) => {       //접속시
         if((msg != "") && (msg == RoomList.get(roomId).answer) && (socket.nickname != RoomList.get(roomId).currnetPlayer))
         {
             var addScore = Math.floor(time/10)*10;
-            RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] += addScore;            
-            socket.emit('calScore', RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)]);
+            RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] += addScore;   
+            
+            io.to(roomId).emit('changeScore', RoomList.get(roomId).nicknames, RoomList.get(roomId).userScore)
+
             io.to(roomId).emit('message', RoomList.get(roomId).answer + '!!! 정답입니다!!');
+
             RoomList.get(roomId).answer = ""
             nextPlayer();
         }
         else
         {
-            io.to(roomId).emit('message', msg);
+            io.to(roomId).emit('message', socket.nickname + ' : ' +msg);
         }        
     });
+
+    socket.on('initPlayerNick', () => {
+        io.to(userId).emit('initPlayerNick', RoomList.get(roomId).nicknames)
+    })
 
     socket.on('changeCategory', (currentCategory) => {
         RoomList.get(roomId).category = currentCategory
@@ -304,6 +312,8 @@ io.on('connection', (socket) => {       //접속시
 
     socket.on('choicedWord',(data) => {
         RoomList.get(roomId).answer = data;
+        io.to(userId).emit('changeCharNumCurrentUser', RoomList.get(roomId).answer)
+        socket.to(roomId).emit('changeCharNum', RoomList.get(roomId).answer)
         socket.to(roomId).emit('choicedWord2', data)
     })
 

@@ -10,7 +10,6 @@
             var word;
             var draw_timer = null;
             var remainTime;
-            var score = 0;
             var ready = false;
             var allReady = true;
 
@@ -245,6 +244,7 @@
                     var userCounter = document.getElementById('usercount');
                     var nicknames = document.getElementsByClassName('nicknames')
                     var output = '';
+
                     userCounter.innerHTML = count + " / 4 ";
                     for(let i =0; i<nick.length;i++) {
                         nicknames[i].innerHTML = nick[i] 
@@ -425,11 +425,11 @@
                     <center>
                     <table id="ingame" style="border-color:black; border-style:solid; height: 215px; width: 1680px; text-align: center;">
                         <tr>
-                            <td rowspan="2" style="border-color:black; border-style:solid; width: 230px;">
-                                라운드
+                            <td id = "round" rowspan="2" style="border-color:black; border-style:solid; width: 230px;">
+                                
                             </td>
-                            <td colspan="4" style="border-color:black; border-style:solid; width: 1200px;">
-                                글자수
+                            <td id = "charNum" colspan="4" style="border-color:black; border-style:solid; width: 1200px;">
+                                
                             </td>
                             <td colspan="2" rowspan="7" style="border-color:black; border-style:solid; width: 250px;">
                                 <div id='msgs' type = 'none'></div>
@@ -446,23 +446,24 @@
                             </td>
                         </tr>
                         <tr>
-                            <td style="border-color:black; border-style:solid;">
-                                이름1 / 점수1
+                        <tr>
+                            <td class = "player" style="border-color:black; border-style:solid;">
+                                
                             </td>
                         </tr>
                         <tr>
-                            <td style="border-color:black; border-style:solid;">
-                                이름2 / 점수2
+                            <td class = "player" style="border-color:black; border-style:solid;">
+                                
                             </td>
                         </tr>
                         <tr>
-                            <td style="border-color:black; border-style:solid;">
-                                이름3 / 점수3
+                            <td class = "player" style="border-color:black; border-style:solid;">
+                                
                             </td>
                         </tr>
                         <tr>
-                            <td style="border-color:black; border-style:solid;">
-                                이름4 / 점수4
+                            <td class = "player" style="border-color:black; border-style:solid;">
+                                
                             </td>
                             <td colspan="2" style="border-color:black; border-style:solid;">
                                 <form id = 'msgform'>
@@ -591,6 +592,50 @@
                    {
                         socket.emit('nextPlayer')
                    }
+
+                   socket.emit('initPlayerNick')
+                })
+
+                socket.on('initPlayerNick', (userList) => {
+                    player = document.getElementsByClassName('player')
+                    for(let i=0;i<userList.length; i++)
+                    {
+                        player[i].innerHTML = userList[i] + ' / 0'
+                    }
+                })
+
+                socket.on('changeRound', (round) => {
+                    document.getElementById('round').innerHTML = round + ' / 3'
+                })
+
+                socket.on('changeCharNumCurrentUser', (answer) => {
+                    document.getElementById('charNum').innerHTML = answer
+                })
+
+                socket.on('changeCharNum', (answer) => {
+                    var charnum ="";
+                    for(let i=0;i<answer.length;i++)
+                    {
+                        if(answer[i] == ' ')
+                        {
+                            charnum += ' '
+                        }
+                        else
+                        {
+                            charnum+='_'
+                        }
+                    }
+
+                    document.getElementById('charNum').innerHTML = charnum
+                })
+
+                socket.on('changeScore', (nickList, scoreList) => {
+                    players = document.getElementsByClassName('player')
+
+                    for(let i =0; i<nickList.length; i++)
+                    {
+                        players[i].innerHTML = nickList[i] + ' / ' + scoreList[i]
+                    }
                 })
 
                 socket.on('changeReadyImage', (index, bool) => {
@@ -615,11 +660,6 @@
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
                 });
-
-                socket.on('calScore', (curScore) => {
-                    this.score = curScore;
-                    console.log(curScore)
-                })
 
                 var waitingMsgForm = document.getElementById('waitingMsgForm');
                 waitingMsgForm.onsubmit = (e) => {
