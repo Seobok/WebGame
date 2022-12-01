@@ -170,7 +170,11 @@
                             draw_timer = null;
 
                             obj.innerHTML =  '';
-                            alert('시간 초과!');
+                            
+                            if(this.nickname == curPlayer)
+                            {
+                                socket.emit('timeOutNextPlayer');
+                            }
                         }
                     }
                 , 1000);
@@ -211,6 +215,8 @@
 
                         if(ts == 0) 
                         {
+                            var timerDiv = document.getElementById('timer');
+                            closePop();
                             setTimeout(function(){
                                 clearInterval(timer)
                             }, 0)                            
@@ -221,6 +227,7 @@
                             console.log(word);
                             socket.emit('choicedWord', word);
                             socket.emit('wordChoiced')
+                            drawTimer(currentTime, timerDiv);
                         }
                     }
                 , 1000);
@@ -269,7 +276,7 @@
                         var newRoomMasterChoiceList = document.getElementById('newRoomMasterChoiceList')
                         newRoomMasterChoiceList.innerHTML = `
                         <td>
-                            <form id = 'nonVisibleCategory'>
+                            <form id = 'invisibleCategory'>
                                 <p>
                                     <select onchange="changeCategory(this)" id="category">
                                         <option value="korean">한글</option>
@@ -283,7 +290,7 @@
                             </form>
                         </td>
                         <td>
-                            <form id = 'nonVisibleTimeout'>
+                            <form id = 'invisibleTimeout'>
                                 <p>
                                     <select onchange="changeTimer(this)" id="timeout">
                                         <option value="30">30초</option>
@@ -323,6 +330,9 @@
                 })
 
                 socket.on('changeCategoryTimeoutList', (_category, _timeout) => {
+                    currentCategory = _category;
+                    currentTime = _timeout;
+
                     var categories = document.getElementById("category").getElementsByTagName('option');
                     for(let i = 0;i < categories.length; i++)
                     {
@@ -342,12 +352,34 @@
                 })
 
                 socket.on('changeCategoryTimeout', (_category, _timeout) => {
-                    //TODO 방장 나갈때 처리
-                    var nonVisibleCategory = document.getElementById('nonVisibleCategory');
-                    var nonVisibleTimeout = document.getElementById('nonVisibleTimeout');                                          
-                    nonVisibleCategory.innerHTML = _category;                        
-                    nonVisibleTimeout.innerHTML = _timeout;
-                              
+                    var invisibleCategory = document.getElementById('invisibleCategory');
+                    var invisibleTimeout = document.getElementById('invisibleTimeout');
+                    if(_category == 'korean')
+                    {
+                        invisibleCategory.innerHTML = '한글';
+                    }
+                    else if(_category == 'pen')
+                    {
+                        invisibleCategory.innerHTML = '학용품';
+                    }
+                    else if(_category == 'instrument')
+                    {
+                        invisibleCategory.innerHTML = '악기';
+                    } 
+                    else if(_category == 'food')
+                    {
+                        invisibleCategory.innerHTML = '음식';
+                    }                                       
+                    else if(_category == 'electronics')
+                    {
+                        invisibleCategory.innerHTML = '전자 제품';
+                    } 
+                    else if(_category == 'sport')
+                    {
+                        invisibleCategory.innerHTML = '운동';
+                    } 
+                                            
+                    invisibleTimeout.innerHTML = _timeout + '초';                              
                 })
 
                 socket.on('roomListClear', () => {
@@ -462,11 +494,6 @@
                             </center>
                         </div>
                     </div>`
-
-                    var startbtn = document.getElementById('nextPlayer')
-                    startbtn.onclick = function() {
-                        socket.emit('nextPlayer')
-                    }
                     //<!--채팅-->
                     var msgform = document.getElementById('msgform');
 
@@ -588,12 +615,8 @@
                     
                     for(let i =0; i<wordClass.length; i++)
                     {
-                        wordClass[i].onsubmit= function() {
-
-                        }
                         wordClass[i].onclick = function() {
                             word = wordClass[i].innerText;
-                            console.log(word);
                             socket.emit('choicedWord', word);
                             closePop()
                             drawTimer(currentTime, timer);
@@ -694,6 +717,17 @@
             }            
         </script>
         <style>
+            @font-face{
+                font-family:'Maplestory Light'; /*글꼴*/
+                src: local('Maplestory Light'),
+                    url('Maplestory Light.eot'),
+                    url('Maplestory Light.woff') format('woff'),
+                    url('Maplestory Light.ttf') format('truetype');
+            }
+
+            *{
+                font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+            }
             .popup_box{
                 position: relative;
                 top:50%;
@@ -771,7 +805,7 @@
                             </tr>
                             <tr style="vertical-align:top;" id = "newRoomMasterChoiceList">
                                 <td>
-                                    <form id = 'nonVisibleCategory'>
+                                    <form id = 'invisibleCategory'>
                                         <p>
                                             <select onchange="changeCategory(this)" id="category">
                                                 <option value="korean">한글</option>
@@ -785,7 +819,7 @@
                                     </form>
                                 </td>
                                 <td>
-                                    <form id = 'nonVisibleTimeout'>
+                                    <form id = 'invisibleTimeout'>
                                         <p>
                                             <select onchange="changeTimer(this)" id="timeout">
                                                 <option value="30">30초</option>

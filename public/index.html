@@ -3,13 +3,18 @@
     <head>
         <script>
             window.onload = function() {
-                startbtn = document.querySelectorAll('#btn')
-                startbtn.onmousedown = function() {
-                    startbtn.src = "after_btn.png"
+                startbtn = document.querySelectorAll('.btn')
+
+                for(item of startbtn)
+                {
+                    item.onmousedown = function() {
+                        item.src = "after_btn.png"
+                    }
+                    item.onmouseup = function() {
+                        item.src = "before_btn.png"
+                    }
                 }
-                startbtn.onmouseup = function() {
-                    startbtn.src = "before_btn.png"
-                }
+                
 
                 createRoomBtn = document.getElementById("createRoomBtn")
                 createRoomBtn.onclick = function(){
@@ -18,6 +23,17 @@
             }
         </script>
         <style>
+            @font-face{
+                font-family:'Maplestory Light'; /*글꼴*/
+                src: local('Maplestory Light'),
+                    url('Maplestory Light.eot'),
+                    url('Maplestory Light.woff') format('woff'),
+                    url('Maplestory Light.ttf') format('truetype');
+            }
+
+            *{
+                font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+            }
             .popup_box{
                 position: relative;
                 top:50%;
@@ -38,74 +54,64 @@
     <body background="background.png">
         <div style="text-align: center;" width = "window.width"><img src="title.png" width="800" height="240" ></img></div>
         <div style="text-align: center;">
-            <button id="createRoomBtn"><img src="before_btn.png" width="200" height="100" id="btn"></button>
+            <button id="createRoomBtn" style="background-color: rgba(0,0,0,0.0); border: 0;"><img src="before_btn.png" class="btn" style="width: 200px; height: 100px;"></button>
         </div>
         <div style="text-align: center;">
             <form action="./joinRoom" method="post">
-                <input type="image" src="before_btn.png" width="200" height="100" id="btn">
+                <input type="image" src="before_btn.png" class="btn" style="width: 200px; height: 100px;">
             </form>
         </div>
 
         <div class = "popup_layer" id="popup_layer" style="display: none;">
             <div class="popup_box">
-                <div class="popup_cont">
-                    <div id = "words">
-                        <form action="/createRoom" method="post">
-                            <center>
-                                <table>
-                                    <tr>
-                                        <td style="vertical-align:bottom; height: 100px;">
-                                            방이름
-                                        </td>
-                                        <td>
-                                            <input name="roomName" type="text" style="margin-top: 150px;" required>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="height: 100px;">
-                                            리스트 목록
-                                        </td>
-                                        <td>
-                                            <select name="category" required>
-                                                <option value="korean">한글</option>
-                                                <option value="pen">학용품</option>
-                                                <option value="instrument">악기</option>
-                                                <option value="food">음식</option>
-                                                <option value="electronics">전자제품</option>
-                                                <option value="sport">운동</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="height: 100px;">
-                                            제한시간
-                                        </td>
-                                        <td>
-                                            <select name="timeout" required>
-                                                <option value="30">30초</option>
-                                                <option value="60">1분</option>
-                                                <option value="90">1분30초</option>
-                                                <option value="120">2분</option>
-                                            </select>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="height: 100px;">
-                                            사설방 여부
-                                        </td>
-                                        <td>
-                                            <input name="isPrivate" type="checkbox">
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td style="text-align:center; height: 100px;" colspan="2">
-                                            <input type="submit" src="before_btn.png" width="200" height="100" id="btn">
-                                        </td>
-                                    </tr>
-                                </table>
-                            </center>
-                        </form>
-                    </div>
+                <div id = "words">
+                    <form action="/createRoom" method="post">
+                        <center>
+                            <table style="text-align: center;">
+                                <tr style="height: 100px;">
+                                    <td style="vertical-align:bottom; height: 100px;">
+                                        방이름
+                                    </td>
+                                    <td>
+                                        <input name="roomName" type="text" style="margin-top: 150px; width: 100px;" autocomplete="off" required>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 100px;">
+                                        리스트 목록
+                                    </td>
+                                    <td>
+                                        <select name="category" required>
+                                            <option value="korean">한글</option>
+                                            <option value="pen">학용품</option>
+                                            <option value="instrument">악기</option>
+                                            <option value="food">음식</option>
+                                            <option value="electronics">전자제품</option>
+                                            <option value="sport">운동</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="height: 100px;">
+                                        제한시간
+                                    </td>
+                                    <td>
+                                        <select name="timeout" required>
+                                            <option value="30">30초</option>
+                                            <option value="60">1분</option>
+                                            <option value="90">1분30초</option>
+                                            <option value="120">2분</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align:center; height: 100px;" colspan="2">
+                                        <input type="submit"id="btn" style="background-image: url('before_btn.png'); background-size: cover; width: 200px; height: 100px; background-color: #fff; opacity: 1; border: 0;" value = "">
+                                    </td>
+                                </tr>
+                            </table>
+                        </center>
+                    </form>
                 </div>
             </div>
         </div>
