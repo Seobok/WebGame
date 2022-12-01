@@ -76,8 +76,8 @@
                 function start(event) {
                     is_drawing = true;
                     context.beginPath();
-                    oldPointX = event.clientX - canvas.offsetLeft;
-                    oldPointY = event.clientY - canvas.offsetTop;
+                    oldPointX = event.clientX - canvas.getBoundingClientRect().left;
+                    oldPointY = event.clientY - canvas.getBoundingClientRect().top;
                     context.moveTo(oldPointX, oldPointY);
 
                     event.preventDefault();
@@ -85,8 +85,8 @@
 
                 function draw(event) {
                     if(is_drawing){
-                        newPointX = event.clientX - canvas.offsetLeft;
-                        newPointY = event.clientY - canvas.offsetTop;
+                        newPointX = event.clientX - canvas.getBoundingClientRect().left;
+                        newPointY = event.clientY - canvas.getBoundingClientRect().top;
                         context.lineTo(newPointX, newPointY);
                         context.strokeStyle = draw_color;
                         context.lineWidth = draw_width;
@@ -422,78 +422,121 @@
                     }
 
                     document.body.innerHTML = `
-                    <canvas id = 'canvas'>
-                    </canvas>
-                    <div id = 'tool'>
-                        <table>
-                            <td>
-                                <div class = 'palette'></div>
+                    <center>
+                    <table id="ingame" style="border-color:black; border-style:solid; height: 215px; width: 1680px; text-align: center;">
+                        <tr>
+                            <td rowspan="2" style="border-color:black; border-style:solid; width: 230px;">
+                                라운드
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                            <td colspan="4" style="border-color:black; border-style:solid; width: 1200px;">
+                                글자수
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                            <td colspan="2" rowspan="7" style="border-color:black; border-style:solid; width: 250px;">
+                                <div id='msgs' type = 'none'></div>
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                        </tr>
+                        <tr>
+                            <td colspan="4" rowspan="7" style="border-color:black; border-style:solid;">
+                                <canvas id = 'canvas' width = "1200" height = "800"></canvas>
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                        </tr>
+                        <tr>
+                            <td rowspan="2" style="border-color:black; border-style:solid;">
+                                <div id ='timer'></div>
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                        </tr>
+                        <tr>
+                            <td style="border-color:black; border-style:solid;">
+                                이름1 / 점수1
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                        </tr>
+                        <tr>
+                            <td style="border-color:black; border-style:solid;">
+                                이름2 / 점수2
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                        </tr>
+                        <tr>
+                            <td style="border-color:black; border-style:solid;">
+                                이름3 / 점수3
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                        </tr>
+                        <tr>
+                            <td style="border-color:black; border-style:solid;">
+                                이름4 / 점수4
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
+                            <td colspan="2" style="border-color:black; border-style:solid;">
+                                <form id = 'msgform'>
+                                    <input id ='msginput' autocomplete = 'off' type='text'>
+                                    <button type = 'submit'>입력</button>    
+                                </form>
                             </td>
-                            <td>
-                                <div class = 'palette'></div>
-                            </td>
-                            <td>
-                                <div class = 'undo'></div>
-                            </td>
-                            <td>
-                                <div class = 'clear'></div>
-                            </td>
-                        </table>
-                    </div>
-                    <button id='nextPlayer'>다음사람</button>
-                    <div id='msgs' type = 'none'>
-                    </div>
-                    <form id = 'msgform'>
-                        <input id ='msginput' autocomplete = 'off' type='text'>
-                        <button type = 'submit'>입력</button>    
-                    </form>
-                    <div id ='timer'></div>
-                    <div class = "popup_layer" id="popup_layer" style="display: none;">
-                        <div class="popup_box">
-                            <center>
-                                <table style="width:900px; padding: 0px; background-color: white; margin: 0px;">
-                                    <tr>
-                                        <td>
-                                            <button class = 'word' style = "font-size: 70px"></button>
-                                        </td>
-                                        <td>
-                                            <button class = 'word' style = "font-size: 70px"></button>
-                                        </td>
-                                        <td>
-                                            <button class = 'word' style = "font-size: 70px"></button>
-                                        </td>
-                                    </tr>
-                                </table>
-                            </center>
+                        </tr>
+                    </table>
+                    <div style="width: 1200px; height: 100px; border-color:black; border-style:solid; margin-top: 10px;">
+                        <div id = 'tool'>
+                            <table>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'palette'></div>
+                                </td>
+                                <td>
+                                    <div class = 'undo'></div>
+                                </td>
+                                <td>
+                                    <div class = 'clear'></div>
+                                </td>
+                            </table>
                         </div>
-                    </div>`
+                    </div>
+                </center>
+                <div class = "popup_layer" id="popup_layer" style="display: none;">
+                    <div class="popup_box">
+                        <center>
+                            <table style="width:900px; padding: 0px; background-color: white; margin: 0px;">
+                                <tr>
+                                    <td>
+                                        <button class = 'word' style = "font-size: 70px"></button>
+                                    </td>
+                                    <td>
+                                        <button class = 'word' style = "font-size: 70px"></button>
+                                    </td>
+                                    <td>
+                                        <button class = 'word' style = "font-size: 70px"></button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </center>
+                    </div>
+                </div>`
                     //<!--채팅-->
                     var msgform = document.getElementById('msgform');
 
@@ -530,8 +573,8 @@
                     }
 
                     canvas = document.getElementById('canvas')
-                    canvas.width = 800
-                    canvas.height = 600
+                    canvas.width = 1200
+                    canvas.height = 710
 
                     context = canvas.getContext('2d')
                     context.fillStyle = background_color
@@ -727,6 +770,9 @@
 
             *{
                 font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+            }
+            #ingame tr{
+                height: 100px;
             }
             .popup_box{
                 position: relative;

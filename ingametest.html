@@ -23,7 +23,7 @@
     </head>
     <body>
         <center>
-            <table style="border-color:black; border-style:solid; height: 215px; width: 1680px; text-align: center;">
+            <table id="ingame" style="border-color:black; border-style:solid; height: 215px; width: 1680px; text-align: center;">
                 <tr>
                     <td rowspan="2" style="border-color:black; border-style:solid; width: 230px;">
                         라운드
@@ -32,17 +32,18 @@
                         글자수
                     </td>
                     <td colspan="2" rowspan="7" style="border-color:black; border-style:solid; width: 250px;">
-                        채팅창
+                        <div id='msgs' type = 'none'></div>
                     </td>
                 </tr>
                 <tr>
                     <td colspan="4" rowspan="7" style="border-color:black; border-style:solid;">
-                        그림판
+                        <canvas id = 'canvas' width="700" height="700">
+                        </canvas>
                     </td>
                 </tr>
                 <tr>
                     <td rowspan="2" style="border-color:black; border-style:solid;">
-                        시간
+                        <div id ='timer'></div>
                     </td>
                 </tr>
                 <tr></tr>
@@ -66,13 +67,77 @@
                         이름4 / 점수4
                     </td>
                     <td colspan="2" style="border-color:black; border-style:solid;">
-                        채팅입력
+                        <form id = 'msgform'>
+                            <input id ='msginput' autocomplete = 'off' type='text'>
+                            <button type = 'submit'>입력</button>    
+                        </form>
                     </td>
                 </tr>
             </table>
             <div style="width: 1200px; height: 100px; border-color:black; border-style:solid; margin-top: 10px;">
-                팔레트
+                <div id = 'tool'>
+                    <table>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'palette'></div>
+                        </td>
+                        <td>
+                            <div class = 'undo'></div>
+                        </td>
+                        <td>
+                            <div class = 'clear'></div>
+                        </td>
+                    </table>
+                </div>
             </div>
         </center>
+        <div class = "popup_layer" id="popup_layer" style="display: none;">
+            <div class="popup_box">
+                <center>
+                    <table style="width:900px; padding: 0px; background-color: white; margin: 0px;">
+                        <tr>
+                            <td>
+                                <button class = 'word' style = "font-size: 70px"></button>
+                            </td>
+                            <td>
+                                <button class = 'word' style = "font-size: 70px"></button>
+                            </td>
+                            <td>
+                                <button class = 'word' style = "font-size: 70px"></button>
+                            </td>
+                        </tr>
+                    </table>
+                </center>
+            </div>
+        </div>
     </body>
 </html>
