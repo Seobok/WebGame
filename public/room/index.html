@@ -39,13 +39,23 @@
                 //<!-- 서버 관련 함수 -->
                 params = (new URL(document.location)).searchParams
                 id = params.get('roomId')
+                var _isPrivate = false;
+                if(params.get('isPrivate') == 'on')
+                {
+                    _isPrivate = true;
+                }
+                else
+                {
+                    _isPrivate = false;
+                }
                 
                 socket = io('localhost:52273',{
                     query: {
                         roomId : id,
                         roomName : params.get('roomName'),
                         category : params.get('category'),
-                        timeout : params.get('timeout')
+                        timeout : params.get('timeout'),
+                        isPrivate : _isPrivate,
                     }
                 });
 

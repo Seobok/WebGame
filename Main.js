@@ -53,7 +53,8 @@ app.post('/createRoom', (request, response) => {        //createRoom form에서 
     getroomName = request.body.roomName
     getcategory = request.body.category
     gettimeout = request.body.timeout
-    response.redirect('/room?roomId='+id+'&roomName='+getroomName+'&category='+getcategory+'&timeout='+gettimeout)
+    getisPrivate = request.body.isPrivate
+    response.redirect('/room?roomId='+id+'&roomName='+getroomName+'&category='+getcategory+'&timeout='+gettimeout+'&isPrivate='+getisPrivate)
 })
 
 var RoomList = new Map();                //Nickname을 저장하는 배열 <roomId(String), NicknameArr(Array)>
@@ -62,7 +63,10 @@ getTableList = function() {
     var tableList ="'";
     for([index, Room] of RoomList.entries())
     {
-        tableList += '<tr class = "tr"><td class = "tdID">' + index + '</td><td>' + Room.roomName + '</td><td>' +Room.category+ '</td><td>' +String(Room.timeout)+ '</td></tr>'
+        if(Room.isPrivate == "false")
+        {
+            tableList += '<tr class = "tr"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td>' +Room.category+ '</td><td>' +String(Room.timeout)+ '</td><td>' + Room.nicknames.length+'/4</td></tr>'
+        }
     }
     tableList += "'"
 
@@ -79,6 +83,7 @@ app.post('/joinRoom', (requset, response) => {
                 window.onload = function(){
                     table = document.getElementById("table")
                     table.innerHTML += ` + tableList +  `
+                    console.log(`+ tableList+ `)
                     
                     tr = document.getElementsByClassName("tr")
                     for(let i =0; i<tr.length; i++)
@@ -94,10 +99,11 @@ app.post('/joinRoom', (requset, response) => {
         <body>
             <table style="border: 1px solid;" id="table">
                 <tr>
-                    <td>RoomID</td>
+                    <td style = "display:none;" >RoomID</td>
                     <td>RoomName</td>
                     <td>Category</td>
                     <td>Timeout</td>
+                    <td>UserCount</td>
                 </tr>
             </table>
         </body>
@@ -139,6 +145,7 @@ io.on('connection', (socket) => {       //접속시
             timeout: 0,
             answer : "",
             round : 0,
+            isPrivate: false,
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
     }
@@ -146,6 +153,8 @@ io.on('connection', (socket) => {       //접속시
     RoomList.get(roomId).roomName = socket.handshake.query.roomName
     RoomList.get(roomId).category = socket.handshake.query.category
     RoomList.get(roomId).timeout = Number(socket.handshake.query.timeout)
+    RoomList.get(roomId).isPrivate = socket.handshake.query.isPrivate
+    console.log(RoomList.get(roomId).isPrivate)
 
     if(socket.roomMaster)
     {
