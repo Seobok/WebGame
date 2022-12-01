@@ -256,6 +256,37 @@
                     var showButton = document.getElementById('startGame')
 
                     if(roomMaster) {
+                        var newRoomMasterChoiceList = document.getElementById('newRoomMasterChoiceList')
+                        newRoomMasterChoiceList.innerHTML = `
+                        <td>
+                            <form id = 'nonVisibleCategory'>
+                                <p>
+                                    <select onchange="changeCategory(this)" id="category">
+                                        <option value="korean">한글</option>
+                                        <option value="pen">학용품</option>
+                                        <option value="instrument">악기</option>
+                                        <option value="food">음식</option>
+                                        <option value="electronics">전자제품</option>
+                                        <option value="sport">운동</option>
+                                    </select>
+                                </p>
+                            </form>
+                        </td>
+                        <td>
+                            <form id = 'nonVisibleTimeout'>
+                                <p>
+                                    <select onchange="changeTimer(this)" id="timeout">
+                                        <option value="30">30초</option>
+                                        <option value="60">1분</option>
+                                        <option value="90">1분30초</option>
+                                        <option value="120">2분</option>
+                                    </select>
+                                </p>
+                            </form>
+                        </td>`
+
+                        socket.emit('newRoomMasterChangeList')
+
                         showButton.innerHTML = '게임 시작'
                         showButton.onclick  = function() {
                             if((currentCategory != 'notChoice') && (currentTime != 0) && (allReady == true)) 
@@ -300,11 +331,13 @@
                     }
                 })
 
-                socket.on('changeCategoryTimeout', (_category, _timeout) => {   //TODO 방장 나갈때 처리
-                    var nonVisibleCategory = document.getElementsByClassName('nonVisibleCategory');
-                    nonVisibleCategory[0].innerHTML = _category
-                    var nonVisibleTimeout = document.getElementsByClassName('nonVisibleTimeout');
-                    nonVisibleTimeout[0].innerHTML = _timeout
+                socket.on('changeCategoryTimeout', (_category, _timeout) => {
+                    //TODO 방장 나갈때 처리
+                    var nonVisibleCategory = document.getElementById('nonVisibleCategory');
+                    var nonVisibleTimeout = document.getElementById('nonVisibleTimeout');                                          
+                    nonVisibleCategory.innerHTML = _category;                        
+                    nonVisibleTimeout.innerHTML = _timeout;
+                              
                 })
 
                 socket.on('roomListClear', () => {
@@ -726,32 +759,32 @@
                                 <td>카테고리</td>
                                 <td>시간제한</td>
                             </tr>
-                            <tr style="vertical-align:top;">
+                            <tr style="vertical-align:top;" id = "newRoomMasterChoiceList">
                                 <td>
-                                    <form class = 'nonVisibleCategory'>
-                                    <p>
-                                        <select onchange="changeCategory(this)" id="category">
-                                            <option value="korean">한글</option>
-                                            <option value="pen">학용품</option>
-                                            <option value="instrument">악기</option>
-                                            <option value="food">음식</option>
-                                            <option value="electronics">전자제품</option>
-                                            <option value="sport">운동</option>
-                                        </select>
-                                    </p>
-                                </form>
+                                    <form id = 'nonVisibleCategory'>
+                                        <p>
+                                            <select onchange="changeCategory(this)" id="category">
+                                                <option value="korean">한글</option>
+                                                <option value="pen">학용품</option>
+                                                <option value="instrument">악기</option>
+                                                <option value="food">음식</option>
+                                                <option value="electronics">전자제품</option>
+                                                <option value="sport">운동</option>
+                                            </select>
+                                        </p>
+                                    </form>
                                 </td>
                                 <td>
-                                    <form class = 'nonVisibleTimeout'>
-                                    <p>
-                                        <select onchange="changeTimer(this)" id="timeout">
-                                            <option value="30">30초</option>
-                                            <option value="60">1분</option>
-                                            <option value="90">1분30초</option>
-                                            <option value="120">2분</option>
-                                        </select>
-                                    </p>
-                                </form>
+                                    <form id = 'nonVisibleTimeout'>
+                                        <p>
+                                            <select onchange="changeTimer(this)" id="timeout">
+                                                <option value="30">30초</option>
+                                                <option value="60">1분</option>
+                                                <option value="90">1분30초</option>
+                                                <option value="120">2분</option>
+                                            </select>
+                                        </p>
+                                    </form>
                                 </td>
                             </tr>
                         </table>
