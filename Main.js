@@ -1,6 +1,8 @@
 const express = require('express');
 const { get } = require('http');
 const bodyParser = require('body-parser');
+const ejs = require('ejs');
+const { table } = require('console');
 
 function generateSerial() {     //방 시리얼 넘버 생성
     var chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -54,25 +56,47 @@ app.post('/createRoom', (request, response) => {        //createRoom form에서 
     response.redirect('/room?roomId='+id+'&roomName='+getroomName+'&category='+getcategory+'&timeout='+gettimeout)
 })
 
+var RoomList = new Map();                //Nickname을 저장하는 배열 <roomId(String), NicknameArr(Array)>
+
+getTableList = function() {
+    var tableList ="'";
+    for([index, Room] of RoomList.entries())
+    {
+        tableList += '<tr class = "tr"><td class = "tdID">' + index + '</td><td>' + Room.roomName + '</td><td>' +Room.category+ '</td><td>' +String(Room.timeout)+ '</td></tr>'
+    }
+    tableList += "'"
+
+    return tableList;
+}
+
 app.post('/joinRoom', (requset, response) => {
+    tableList = getTableList()
     response.send(`
     <!DOCTYPE html>
     <head>
         <script>
             window.onload = function(){
-                test = document.getElementById("test")
-                test.onclick = function(){
-                    alert("test")
+                table = document.getElementById("table")
+                table.innerHTML += ` + tableList +  `
+                
+                tr = document.getElementsByClassName("tr")
+                for(let i =0; i<tr.length; i++)
+                {
+                    tr[i].onclick = function() {
+                        td = tr[i].getElementByTagName('td')
+                        location.href = "localhost/room/?roomId="+td[0].innerHTML+"&roomName="+td[1].innerHTML+"&category="+td[2].innerHTML+"&timeout="+td[3].innerHTML
+                    }
                 }
             }
         </script>
     </head>
     <body>
-        <table style="border: 1px solid;">
-            <tr id="test">
-                <td>123123</td>
-                <td>123123123</td>
-                <td>123123123123</td>
+        <table style="border: 1px solid;" id="table">
+            <tr>
+                <td>RoomID</td>
+                <td>RoomName</td>
+                <td>Category</td>
+                <td>Timeout</td>
             </tr>
         </table>
     </body>`)
@@ -82,13 +106,9 @@ app.listen(80, () => {});               //express 서버생성
 
 server.listen(52273);                   //socket 서버 생성
 
-var RoomList = new Map();                //Nickname을 저장하는 배열 <roomId(String), NicknameArr(Array)>
-
 io.on('connection', (socket) => {       //접속시
     const roomId = socket.handshake.query.roomId;
     const userId = socket.id;
-
-    console.log(socket.handshake.query.roomName, socket.handshake.query.category, socket.handshake.query.timeout)
 
     korean = new Array();
     pen = new Array();
@@ -124,6 +144,16 @@ io.on('connection', (socket) => {       //접속시
     RoomList.get(roomId).roomName = socket.handshake.query.roomName
     RoomList.get(roomId).category = socket.handshake.query.category
     RoomList.get(roomId).timeout = Number(socket.handshake.query.timeout)
+
+    if(socket.roomMaster)
+    {
+        io.to(userId).emit('changeCategoryTimeoutList', RoomList.get(roomId).category, String(RoomList.get(roomId).timeout))
+        console.log(RoomList.get(roomId).category, String(RoomList.get(roomId).timeout))
+    }
+    else
+    {
+        io.to(userId).emit('changeCategoryTimeout', RoomList.get(roomId).category, String(RoomList.get(roomId).timeout))
+    }
 
     while(RoomList.get(roomId).nicknames.indexOf(socket.nickname) >= 0)
     {
@@ -196,6 +226,16 @@ io.on('connection', (socket) => {       //접속시
         }        
         io.to(roomId).emit('message', msg);
     });
+
+    socket.on('changeCategory', (currentCategory) => {
+        RoomList.get(roomId).category = currentCategory
+        socket.to(roomId).emit('changeCategoryTimeout', RoomList.get(roomId).category, String(RoomList.get(roomId).timeout))
+    })
+
+    socket.on('changeTimer', (currentTime) => {
+        RoomList.get(roomId).timeout = currentTime
+        socket.to(roomId).emit('changeCategoryTimeout', RoomList.get(roomId).category, String(RoomList.get(roomId).timeout))
+    })
 
     socket.on('changeReady', (ready) => {
         var allReady = true;

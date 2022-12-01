@@ -1,23 +1,21 @@
 <!DOCTYPE html>
-<head>
-    <script>
-        window.onload = function(){
-            roomNames = document.getElementsByClassName("roomName")
-            userCounts = document.getElementsByClassName("userCount")
-            categories = document.getElementsByClassName("category")
-            test = document.getElementById("test")
-            test.onclick = function(){
-                alert("test")
+    <head>
+        <script>
+            window.onload = function(){
+                table = document.getElementById("table")
+                for(Room of RoomList.values())
+                {
+                    table.innerHTML += '<tr id="test"><td>Room.roomName</td><td>Room.category</td><td>Room.timeout</td></tr>'
+                }
             }
-        }
-    </script>
-</head>
-<body>
-    <table style="border: 1px solid;">
-        <tr id="test">
-            <td class="roomName"></td>
-            <td class="userCount"></td>
-            <td class="category"></td>
-        </tr>
-    </table>
-</body>
+        </script>
+    </head>
+    <body>
+        <table style="border: 1px solid;" id="table">
+            <tr id="test">
+                <td>RoomName</td>
+                <td>Category</td>
+                <td>Timeout</td>
+            </tr>
+        </table>
+    </body>

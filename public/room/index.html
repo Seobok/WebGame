@@ -16,10 +16,12 @@
 
             const changeCategory = (target) => {       //카테고리 고르는 리스트 리스너
                 currentCategory = target.value;
+                socket.emit('changeCategory', currentCategory)
             }
 
             const changeTimer = (target) => {
                 currentTime = parseInt(target.value);
+                socket.emit('changeTimer', currentTime)
             }
 
             function sendCSV(data) {                //CSV파일 서버로 전달
@@ -264,13 +266,6 @@
                     }
                     else
                     {
-                        var nonVisible= document.getElementsByClassName('nonVisible');
-
-                        for(let i = 0; i < nonVisible.length; i++)
-                        {
-                            nonVisible[i].innerHTML = '';
-                        }
-
                         showButton.innerHTML = '준 비'
                         showButton.onclick = function() {
                             if(ready == false)
@@ -284,6 +279,32 @@
                             socket.emit('changeReady', ready);
                         }
                     }                    
+                })
+
+                socket.on('changeCategoryTimeoutList', (_category, _timeout) => {
+                    var categories = document.getElementById("category").getElementsByTagName('option');
+                    for(let i = 0;i < categories.length; i++)
+                    {
+                        if(categories[i].value == _category)
+                        {
+                            categories[i].selected = 'selected'
+                        }
+                    }
+                    var timeouts = document.getElementById("timeout").getElementsByTagName('option');
+                    for(let i = 0;i<timeouts.length;i++)
+                    {
+                        if(timeouts[i].value == _timeout)
+                        {
+                            timeouts[i].selected = 'selected'
+                        }
+                    }
+                })
+
+                socket.on('changeCategoryTimeout', (_category, _timeout) => {   //TODO 방장 나갈때 처리
+                    var nonVisibleCategory = document.getElementsByClassName('nonVisibleCategory');
+                    nonVisibleCategory[0].innerHTML = _category
+                    var nonVisibleTimeout = document.getElementsByClassName('nonVisibleTimeout');
+                    nonVisibleTimeout[0].innerHTML = _timeout
                 })
 
                 socket.on('roomListClear', () => {
@@ -702,14 +723,14 @@
                                 <td colspan="2" id = 'usercount' style="text-align: right; vertical-align: top; height: 20px;"></td>
                             </tr>
                             <tr style="vertical-align:bottom;">
-                                <td class = 'nonVisible'>카테고리</td>
-                                <td class = 'nonVisible'>시간제한</td>
+                                <td>카테고리</td>
+                                <td>시간제한</td>
                             </tr>
                             <tr style="vertical-align:top;">
                                 <td>
-                                    <form class = 'nonVisible'>
+                                    <form class = 'nonVisibleCategory'>
                                     <p>
-                                        <select onchange="changeCategory(this)">
+                                        <select onchange="changeCategory(this)" id="category">
                                             <option value="korean">한글</option>
                                             <option value="pen">학용품</option>
                                             <option value="instrument">악기</option>
@@ -721,13 +742,13 @@
                                 </form>
                                 </td>
                                 <td>
-                                    <form class = 'nonVisible'>
+                                    <form class = 'nonVisibleTimeout'>
                                     <p>
-                                        <select onchange="changeTimer(this)">
-                                            <option value="30sec">30초</option>
-                                            <option value="60sec">1분</option>
-                                            <option value="90sec">1분30초</option>
-                                            <option value="120sec">2분</option>
+                                        <select onchange="changeTimer(this)" id="timeout">
+                                            <option value="30">30초</option>
+                                            <option value="60">1분</option>
+                                            <option value="90">1분30초</option>
+                                            <option value="120">2분</option>
                                         </select>
                                     </p>
                                 </form>
