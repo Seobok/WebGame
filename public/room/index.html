@@ -423,21 +423,19 @@
 
                     document.body.innerHTML = `
                     <center>
-                    <table id="ingame" style="border-color:black; border-style:solid; height: 215px; width: 1680px; text-align: center;">
+                    <table id="ingame" style="border-color:black; border-style:solid; height: 215px; width: 1560px; text-align: center;">
                         <tr>
-                            <td id = "round" rowspan="2" style="border-color:black; border-style:solid; width: 230px;">
-                                
+                            <td id = "round" rowspan="2" style="border-color:black; border-style:solid; width: 230px; font-size: 50px;">                                
                             </td>
-                            <td id = "charNum" colspan="4" style="border-color:black; border-style:solid; width: 1200px;">
-                                
+                            <td id = "charNum" colspan="4" style="border-color:black; border-style:solid; width: 1080px; font-size: 50px;">                                
                             </td>
                             <td colspan="2" rowspan="7" style="border-color:black; border-style:solid; width: 250px;">
-                                <div id='msgs' type = 'none'></div>
+                                <div id='msgs' type = 'none' style="overflow-x: hidden; overflow-y: scroll; height: 750px; text-align: left;"></div>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="4" rowspan="7" style="border-color:black; border-style:solid;">
-                                <canvas id = 'canvas' width = "1200" height = "800"></canvas>
+                                <canvas id = 'canvas' width = "1080px" height = "720px"></canvas>
                             </td>
                         </tr>
                         <tr>
@@ -473,65 +471,63 @@
                             </td>
                         </tr>
                     </table>
-                    <div style="width: 1200px; height: 100px; border-color:black; border-style:solid; margin-top: 10px;">
-                        <div id = 'tool'>
-                            <table>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'palette'></div>
-                                </td>
-                                <td>
-                                    <div class = 'undo'></div>
-                                </td>
-                                <td>
-                                    <div class = 'clear'></div>
-                                </td>
-                            </table>
-                        </div>
+                    <div id = 'tool' style="width: 1500px; height: 150px; border-color:black; border-style:solid; margin-top: 30px;">
+                        <table>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'palette'></div>
+                            </td>
+                            <td>
+                                <div class = 'undo'></div>
+                            </td>
+                            <td>
+                                <div class = 'clear'></div>
+                            </td>
+                        </table>
                     </div>
                 </center>
-                <div class = "popup_layer" id="popup_layer" style="display: none;">
+                <div class = "popup_layer" id="popup_layer" style = "display: none;">
                     <div class="popup_box">
                         <center>
-                            <table style="width:900px; padding: 0px; background-color: white; margin: 0px;">
+                            <table style="width:900px; padding: 0px; background-color: rgba(0,0,0,0.0); margin: 0px;">
                                 <tr>
                                     <td>
-                                        <button class = 'word' style = "font-size: 70px"></button>
+                                        <button class = 'word' style = "font-size: 70px">가</button>
                                     </td>
                                     <td>
-                                        <button class = 'word' style = "font-size: 70px"></button>
+                                        <button class = 'word' style = "font-size: 70px">나</button>
                                     </td>
                                     <td>
-                                        <button class = 'word' style = "font-size: 70px"></button>
+                                        <button class = 'word' style = "font-size: 70px">다</button>
                                     </td>
                                 </tr>
                             </table>
@@ -574,8 +570,8 @@
                     }
 
                     canvas = document.getElementById('canvas')
-                    canvas.width = 1200
-                    canvas.height = 710
+                    canvas.width = 1080
+                    canvas.height = 720
 
                     context = canvas.getContext('2d')
                     context.fillStyle = background_color
@@ -771,21 +767,21 @@
                         canvas.addEventListener("mouseup", stop, false);
                         canvas.addEventListener("mouseout", stop, false);
 
-                        undo.setAttribute("style", "height: 50px; width: 50px; background-image: url('undo.png'); background-size: cover;")
-                        clear.setAttribute("style", "height: 50px; width: 50px; background-image: url('eraser.png'); background-size: cover;")
-                        tool.setAttribute("style", "background-color: darkgray; height: 50px; width: 770px; padding: 15px;")
+                        undo.setAttribute("style", "height: 80px; width: 80px; background-image: url('undo.png'); background-size: cover;")
+                        clear.setAttribute("style", "height: 80px; width: 80px; background-image: url('eraser.png'); background-size: cover;")
+                        tool.setAttribute("style", "background-color: darkgray; height: 80px; width: 1500px; padding: 15px;")
                         
-                        palettes[0].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: red;")
-                        palettes[1].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: orange;")
-                        palettes[2].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: yellow;")
-                        palettes[3].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: greenyellow;")
-                        palettes[4].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: green;")
-                        palettes[5].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: lightblue;")
-                        palettes[6].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: blue;")
-                        palettes[7].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: purple;")
-                        palettes[8].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: white;")
-                        palettes[9].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: grey;")
-                        palettes[10].setAttribute("style", "height: 50px; width: 50px; border-radius: 50%; background-color: black;")
+                        palettes[0].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: red;")
+                        palettes[1].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: orange;")
+                        palettes[2].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: yellow;")
+                        palettes[3].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: greenyellow;")
+                        palettes[4].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: green;")
+                        palettes[5].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: lightblue;")
+                        palettes[6].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: blue;")
+                        palettes[7].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: purple;")
+                        palettes[8].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: white;")
+                        palettes[9].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: grey;")
+                        palettes[10].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: black;")
                     }
                 })
 
@@ -812,22 +808,20 @@
                 font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
             }
             #ingame tr{
-                height: 100px;
+                height: 70px;
             }
             .popup_box{
                 position: relative;
-                top:50%;
-                left:50%; 
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -300%);
+                z-index: 1002;
+                background-image: url('wordchoice.jpg');
+                box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+                border-radius: 35px;
                 overflow: auto; 
                 height: 220px; 
                 width:1200px;
-                transform:translate(-50%, -120%);
-                z-index:1002;
-                box-sizing:border-box;
-                background:#fff;
-                box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
-                -webkit-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
-                -moz-box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
             }
             .popup_box tr{
                 height: 200px;
@@ -836,19 +830,23 @@
             }
             .popup_box td{
                 width: inherit;
-                padding: 0px;
-                margin: 0px;
+                padding: 20px;
+                margin: 20px;
             }
 
             .word{
-                height: 100px;
+                border: 0;
+                background-image: url('notext.png');
+                background-size: cover;
+                background-color: rgba(0,0,0,0.0);
+                height: 150px;
                 width: 300px;
                 padding: 0px;
                 margin: 0px;
             }
         </style>
     </head>
-    <body>
+    <body style="padding: 0px; margin: 0px;">
         <div><img src="title.png" style="width: 200px; height: 50px;"></div>
         <center>
             <table style="width:1040px; padding-top: 20px; padding-left: 20px; padding-right: 20px; background-color: white; margin-top: 40px; padding-bottom: 20px;">

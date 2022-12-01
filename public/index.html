@@ -39,7 +39,7 @@
                 top:50%;
                 left:50%; 
                 overflow: auto; 
-                height: 600px; 
+                height: 528px; 
                 width:500px;
                 transform:translate(-50%, -50%);
                 z-index:1002;
@@ -51,9 +51,9 @@
             }
         </style>
     </head>
-    <body background="background.png">
+    <body background="background10.png" style="background-size: cover;">
         <div style="text-align: center;" width = "window.width"><img src="title.png" width="800" height="240" ></img></div>
-        <div style="text-align: center;">
+        <div style="text-align: center; margin-top: 100px;">
             <button id="createRoomBtn" style="background-color: rgba(0,0,0,0.0); border: 0;"><img src="before_btn.png" class="btn" style="width: 200px; height: 100px;"></button>
         </div>
         <div style="text-align: center;">
@@ -64,16 +64,18 @@
 
         <div class = "popup_layer" id="popup_layer" style="display: none;">
             <div class="popup_box">
-                <div id = "words">
+                <div id = "words" style="background-image: url('popup_background.jpeg'); background-repeat: no-repeat; background-size: cover;">
                     <form action="/createRoom" method="post">
                         <center>
-                            <table style="text-align: center;">
+                            <table style="text-align: center; font-size: 30px; background-size: cover;">
                                 <tr style="height: 100px;">
-                                    <td style="vertical-align:bottom; height: 100px;">
+                                    <td style="margin-top: 50px;">
                                         방이름
                                     </td>
+                                    <td style="width: 50px;" rowspan="4">                                        
+                                    </td>
                                     <td>
-                                        <input name="roomName" type="text" style="margin-top: 150px; width: 100px;" autocomplete="off" required>
+                                        <input name="roomName" type="text" style="width: 150px; height: 25px; font-size: 20px;" autocomplete="off" required>
                                     </td>
                                 </tr>
                                 <tr>
@@ -81,7 +83,7 @@
                                         리스트 목록
                                     </td>
                                     <td>
-                                        <select name="category" required>
+                                        <select name="category" style="width: 120px; height: 25px; font-size: 20px;" required>
                                             <option value="korean">한글</option>
                                             <option value="pen">학용품</option>
                                             <option value="instrument">악기</option>
@@ -96,7 +98,7 @@
                                         제한시간
                                     </td>
                                     <td>
-                                        <select name="timeout" required>
+                                        <select name="timeout" style="width: 120px; height: 25px; font-size: 20px;" required>
                                             <option value="30">30초</option>
                                             <option value="60">1분</option>
                                             <option value="90">1분30초</option>
@@ -106,15 +108,15 @@
                                 </tr>
                                 <tr>
                                     <td style="height: 100px;">
-                                        사설방 여부
+                                        비밀방
                                     </td>
                                     <td>
-                                        <input name="isPrivate" type="checkbox">
+                                        <input name="isPrivate" type="checkbox" style="width: 40px; height: 40px;">
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td style="text-align:center; height: 100px;" colspan="2">
-                                        <input type="submit"id="btn" style="background-image: url('before_btn.png'); background-size: cover; width: 200px; height: 100px; background-color: #fff; opacity: 1; border: 0;" value = "">
+                                    <td style="text-align:center; height: 100px;" colspan="3">
+                                        <input type="submit"id="btn" style="background-image: url('before_btn.png'); background-size: cover; width: 200px; height: 100px; background-color: rgba(0,0,0,0.0); border: 0;" value = "">
                                     </td>
                                 </tr>
                             </table>

@@ -248,9 +248,9 @@ io.on('connection', (socket) => {       //접속시
             RoomList.get(roomId).answer = ""
             nextPlayer();
         }
-        else
+        else if(msg != "")
         {
-            io.to(roomId).emit('message', socket.nickname + ' : ' +msg);
+            io.to(roomId).emit('message', socket.nickname + ' : ' + msg);
         }        
     });
 

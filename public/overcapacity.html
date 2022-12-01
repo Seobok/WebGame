@@ -9,9 +9,24 @@
                 }
             }
         </script>
+        <style>
+            @font-face{
+                font-family:'Maplestory Light'; /*글꼴*/
+                src: local('Maplestory Light'),
+                    url('Maplestory Light.eot'),
+                    url('Maplestory Light.woff') format('woff'),
+                    url('Maplestory Light.ttf') format('truetype');
+            }
+
+            *{
+                font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+            }
+        </style>
     </head>
     <body>
-        <div><h1>인원 초과!</h1></div>
-        <button id = 'goHome'>홈으로 가기</button>
+        <center>
+            <div style="font-size: 100px; padding-bottom: 200px; padding-top: 100px;">인원 초과 ㅠㅠ</div>
+            <button id = 'goHome' style="width: 500px; height: 100px; font-size: 80px;">홈으로 가기</button>
+        </center>        
     </body>
 </html>
