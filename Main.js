@@ -84,8 +84,8 @@ app.post('/joinRoom', (requset, response) => {
                     for(let i =0; i<tr.length; i++)
                     {
                         tr[i].onclick = function() {
-                            td = tr[i].getElementByTagName('td')
-                            window.location.replace("localhost/room/?roomId=" + td[0].innerHTML + "&roomName=" + td[1].innerHTML + "&category=" + td[2].innerHTML + "&timeout=" + td[3].innerHTML)
+                            td = tr[i].getElementsByTagName('td')
+                            window.location.replace("room/?roomId=" + td[0].innerHTML + "&roomName=" + td[1].innerHTML + "&category=" + td[2].innerHTML + "&timeout=" + td[3].innerHTML)
                         }
                     }
                 }
