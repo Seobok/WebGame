@@ -24,7 +24,7 @@ function generateSerial() {     //방 시리얼 넘버 생성
 
 function generateUserNickname(){    //무작위 닉네임 생성
     var adjective = ['번듯한', '멋진', '화려한', '우울한', '슬픈', '기쁜', '힘든', '포기한', '조용한', '시끄러운', '재밌는', '노잼'],
-    noun = ['호랑이', '사자', '인간', '쥐', '나무늘보', '너구리', '바위', '박명수', '토끼', '돼지', '아르마딜로', '사냥꾼', '마법사'],
+    noun = ['호랑이', '사자', '인간', '쥐', '나무늘보', '너구리', '바위', '박명수', '토끼', '돼지', '전사', '사냥꾼', '마법사'],
     randomName="",
     randomNumber;
 
@@ -63,9 +63,34 @@ getTableList = function() {
     var tableList ="'";
     for([index, Room] of RoomList.entries())
     {
-        if(Room.isPrivate == "false" && Room.isGameStart== false)
+        if(Room.isPrivate == "false" && Room.isGameStart == false)
         {
-            tableList += '<tr class = "tr" style = "text-align : center;"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td>' +Room.category+ '</td><td>' +String(Room.timeout)+ '</td><td>' + Room.nicknames.length+'/4</td></tr>'
+            var roomListCategory
+            if(Room.category == 'korean')
+            {
+                roomListCategory = '사자성어';
+            }
+            else if(Room.category == 'pen')
+            {
+                roomListCategory = '학용품';
+            }
+            else if(Room.category == 'instrument')
+            {
+                roomListCategory = '악기';
+            }
+            else if(Room.category == 'food')
+            {
+                roomListCategory = '음식';
+            }
+            else if(Room.category == 'electronics')
+            {
+                roomListCategory = '전자 제품';
+            }
+            else if(Room.category == 'sport')
+            {
+                roomListCategory = '운동';
+            }
+            tableList += '<tr class = "tr" style="text-align: center;"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td>' +roomListCategory+ '</td><td>' +String(Room.timeout)+ '</td><td>' + Room.nicknames.length+'/4</td></tr>'
         }
     }
     tableList += "'"
@@ -89,6 +114,30 @@ app.post('/joinRoom', (requset, response) => {
                     {
                         tr[i].onclick = function() {
                             td = tr[i].getElementsByTagName('td')
+                            if(td[2].innerHTML == '사자성어')
+                            {
+                                td[2].innerHTML = 'korean';
+                            }
+                            else if(td[2].innerHTML == '학용품')
+                            {
+                                td[2].innerHTML = 'pen';
+                            }
+                            else if(td[2].innerHTML == '악기')
+                            {
+                                td[2].innerHTML = 'instrument';
+                            }
+                            else if(td[2].innerHTML == '음식')
+                            {
+                                td[2].innerHTML = 'food';
+                            }
+                            else if(td[2].innerHTML == '전자 제품')
+                            {
+                                td[2].innerHTML = 'electronics';
+                            }
+                            else if(td[2].innerHTML == '운동')
+                            {
+                                td[2].innerHTML = 'sport';
+                            }
                             window.location.replace("room/?roomId=" + td[0].innerHTML + "&roomName=" + td[1].innerHTML + "&category=" + td[2].innerHTML + "&timeout=" + td[3].innerHTML)
                         }
                     }
@@ -96,7 +145,7 @@ app.post('/joinRoom', (requset, response) => {
             </script>
             <style>
                 @font-face{
-                        font-family:'Maplestory Light'; /*글꼴*/
+                        font-family:'Maplestory Light';
                         src: local('Maplestory Light'),
                             url('Maplestory Light.eot'),
                             url('Maplestory Light.woff') format('woff'),
@@ -104,7 +153,7 @@ app.post('/joinRoom', (requset, response) => {
                     }
 
                 .maple-font{
-                    font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+                    font-family: 'Maplestory Light', sans-serif;
                 }
 
                 tr{
@@ -118,7 +167,7 @@ app.post('/joinRoom', (requset, response) => {
                 }
             </style>
         </head>
-        <body class="maple-font">
+        <body class="maple-font" style="background-image: url('background10.png'); padding: 0px; margin: 0px; background-size: cover;">
             <center>
                 <img src="../main.png" style="width: 400px;">
                 <table style="border: 5px solid; border-collapse: collapse; margin-top: 20px;" id="table">
@@ -130,8 +179,7 @@ app.post('/joinRoom', (requset, response) => {
                         <td style = "width: 200px; text-align: center; font-size: 30px;">userCount</td>
                     </tr>
                 </table>
-            </center>
-            
+            </center>            
         </body>
     </html>`)
 })
@@ -259,6 +307,7 @@ io.on('connection', (socket) => {       //접속시
             RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
             io.to(roomId).emit('changeRound', RoomList.get(roomId).round)
         }
+        
         RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
         io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)
     }
@@ -278,8 +327,7 @@ io.on('connection', (socket) => {       //접속시
             RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
             io.to(roomId).emit('setBrowser', RoomList.get(roomId).currnetPlayer)    //브라우저 설정 이벤트 호출
             RoomList.get(roomId).isGameStart = true;
-        }
-        
+        }        
     })
 
     socket.on('nextPlayer', () => {

@@ -36,9 +36,6 @@
             }
 
             function openClearPop(ansScore, ansUser) {
-                
-                console.log(ansScore, ansUser)
-
                 let previousScore = -1;
                 let count = 1;
 
@@ -202,7 +199,6 @@
                         var tm = min;
                         var ts = sec;
 
-                        // 한자리일 경우 처리
                         if(tm < 10){
                             tm = "0" + min;
                         }
@@ -210,8 +206,7 @@
                             ts = "0" + sec;
                         }
 
-                        // 함수 호출 당시 받은 object의 html 교체
-                        obj.innerHTML =  "남은 시간 : " + tm + ":" + ts;
+                        obj.innerHTML =  "남은 시간<br>"  + tm + ":" + ts;
 
                         if(ts == 0) 
                         {
@@ -241,8 +236,7 @@
 
                         var tm = min;
                         var ts = sec;
-        
-                        // 한자리일 경우 처리
+
                         if(tm < 10){
                             tm = "0" + min;
                         }
@@ -250,8 +244,7 @@
                             ts = "0" + sec;
                         }
 
-                        // 함수 호출 당시 받은 object의 html 교체
-                        obj.innerHTML =  "남은 시간 : " + tm + ":" + ts;
+                        obj.innerHTML =  "남은 시간<br>" + tm + ":" + ts;
 
                         if(word) 
                         {
@@ -326,8 +319,8 @@
                         newRoomMasterChoiceList.innerHTML = `
                         <td>
                             <form id = 'invisibleCategory'>
-                                <select onchange="changeCategory(this)" id="category" style="width: 80px; font-size: 20px">
-                                    <option value="korean">한글</option>
+                                <select onchange="changeCategory(this)" id="category" style="width: 100px; font-size: 20px">
+                                    <option value="korean">사자성어</option>
                                     <option value="pen">학용품</option>
                                     <option value="instrument">악기</option>
                                     <option value="food">음식</option>
@@ -338,7 +331,7 @@
                         </td>
                         <td>
                             <form id = 'invisibleTimeout'>
-                                <select onchange="changeTimer(this)" id="timeout" style="width: 80px; font-size: 20px">
+                                <select onchange="changeTimer(this)" id="timeout" style="width: 100px; font-size: 20px">
                                     <option value="30">30초</option>
                                     <option value="60">1분</option>
                                     <option value="90">1분30초</option>
@@ -432,7 +425,7 @@
                     var invisibleTimeout = document.getElementById('invisibleTimeout');
                     if(_category == 'korean')
                     {
-                        invisibleCategory.innerHTML = '한글';
+                        invisibleCategory.innerHTML = '사자성어';
                     }
                     else if(_category == 'pen')
                     {
@@ -516,29 +509,21 @@
                         </tr>
                         <tr>
                             <td rowspan="2" style="border-color:black; border-style:solid;">
-                                <div id ='timer'></div>
+                                <div id ='timer' style = "font-size: 50px"></div>
                             </td>
                         </tr>
                         <tr>
                         <tr>
-                            <td class = "player" style="border-color:black; border-style:solid;">
-                                
-                            </td>
+                            <td class = "player" style="border-color:black; border-style:solid; font-size: 20px"></td>
                         </tr>
                         <tr>
-                            <td class = "player" style="border-color:black; border-style:solid;">
-                                
-                            </td>
+                            <td class = "player" style="border-color:black; border-style:solid; font-size: 20px"></td>
                         </tr>
                         <tr>
-                            <td class = "player" style="border-color:black; border-style:solid;">
-                                
-                            </td>
+                            <td class = "player" style="border-color:black; border-style:solid; font-size: 20px"></td>
                         </tr>
                         <tr>
-                            <td class = "player" style="border-color:black; border-style:solid;">
-                                
-                            </td>
+                            <td class = "player" style="border-color:black; border-style:solid; font-size: 20px"></td>
                             <td colspan="2" style="border-color:black; border-style:solid;">
                                 <form id = 'msgform'>
                                     <input id ='msginput' autocomplete = 'off' type='text' style = "width: 200px; font-size: 25px">
@@ -602,13 +587,13 @@
                             <table style="width:900px; padding: 0px; background-color: rgba(0,0,0,0.0); margin: 0px;">
                                 <tr>
                                     <td>
-                                        <button class = 'word' style = "font-size: 70px">가</button>
+                                        <button class = 'word' style = "font-size: 30px"></button>
                                     </td>
                                     <td>
-                                        <button class = 'word' style = "font-size: 70px">나</button>
+                                        <button class = 'word' style = "font-size: 30px"></button>
                                     </td>
                                     <td>
-                                        <button class = 'word' style = "font-size: 70px">다</button>
+                                        <button class = 'word' style = "font-size: 30px"></button>
                                     </td>
                                 </tr>
                             </table>
@@ -621,48 +606,24 @@
                             <div style="margin-top: 20px;"> 게임종료 </div>
                             <table >
                                 <tr>
-                                    <td class="Ranking">
-                                        
-                                    </td>
-                                    <td class="popup_player">
-                                        
-                                    </td>
-                                    <td class="popup_score">
-                                        
-                                    </td>
+                                    <td class="Ranking"></td>
+                                    <td class="popup_player"></td>
+                                    <td class="popup_score"></td>
                                 </tr>
                                 <tr>
-                                    <td class="Ranking">
-                                        
-                                    </td>
-                                    <td class="popup_player">
-                                        
-                                    </td>
-                                    <td class="popup_score">
-                                        
-                                    </td>
+                                    <td class="Ranking"></td>
+                                    <td class="popup_player"></td>
+                                    <td class="popup_score"></td>
                                 </tr>
                                 <tr>
-                                    <td class="Ranking">
-                                        
-                                    </td>
-                                    <td class="popup_player">
-                                        
-                                    </td>
-                                    <td class="popup_score">
-                                        
-                                    </td>
+                                    <td class="Ranking"></td>
+                                    <td class="popup_player"></td>
+                                    <td class="popup_score"></td>
                                 </tr>
                                 <tr>
-                                    <td class="Ranking">
-                                        
-                                    </td>
-                                    <td class="popup_player">
-                                        
-                                    </td>
-                                    <td class="popup_score">
-                                        
-                                    </td>
+                                    <td class="Ranking"></td>
+                                    <td class="popup_player"></td>
+                                    <td class="popup_score"></td>
                                 </tr>
                             </table>
                             <div style="margin-top: 30px;">
@@ -741,16 +702,16 @@
                     player = document.getElementsByClassName('player')
                     for(let i=0;i<userList.length; i++)
                     {
-                        player[i].innerHTML = userList[i] + ' / 0'
+                        player[i].innerHTML = userList[i] + '<br>0'
                     }
                 })
 
                 socket.on('changeRound', (round) => {
-                    document.getElementById('round').innerHTML = round + ' / 3'
+                    document.getElementById('round').innerHTML = '라운드<br>' + round + ' / 3'
                 })
 
                 socket.on('changeCharNumCurrentUser', (answer) => {
-                    document.getElementById('charNum').innerHTML = answer
+                    document.getElementById('charNum').innerHTML = "정답 : " + answer
                 })
 
                 socket.on('changeCharNum', (answer) => {
@@ -767,7 +728,7 @@
                         }
                     }
 
-                    document.getElementById('charNum').innerHTML = charnum
+                    document.getElementById('charNum').innerHTML = "글자수 : " + charnum
                 })
 
                 socket.on('changeScore', (nickList, scoreList) => {
@@ -775,7 +736,7 @@
 
                     for(let i =0; i<nickList.length; i++)
                     {
-                        players[i].innerHTML = nickList[i] + ' / ' + scoreList[i];
+                        players[i].innerHTML = nickList[i] + '<br>' + scoreList[i];
                     }
                 })
 
@@ -947,7 +908,7 @@
         </script>
         <style>
             @font-face{
-                font-family:'Maplestory Light'; /*글꼴*/
+                font-family:'Maplestory Light';
                 src: local('Maplestory Light'),
                     url('Maplestory Light.eot'),
                     url('Maplestory Light.woff') format('woff'),
@@ -955,7 +916,7 @@
             }
 
             *{
-                font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+                font-family: 'Maplestory Light', sans-serif;
             }
             #ingame tr{
                 height: 70px;
@@ -966,7 +927,7 @@
                 left: 50%;
                 transform: translate(-50%, -300%);
                 z-index: 1002;
-                background-image: url('wordchoice.jpg');
+                background-image: url('wordchoice.png');
                 box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
                 border-radius: 35px;
                 overflow: auto; 
@@ -990,7 +951,7 @@
                 background-size: cover;
                 background-color: rgba(0,0,0,0.0);
                 height: 150px;
-                width: 300px;
+                width: 350px;
                 padding: 0px;
                 margin: 0px;
             }
@@ -1073,7 +1034,7 @@
                                 <td>
                                     <form id = 'invisibleCategory' style="font-size: 30px;">
                                         <select onchange="changeCategory(this)" id="category">
-                                            <option value="korean">한글</option>
+                                            <option value="korean">사자성어</option>
                                             <option value="pen">학용품</option>
                                             <option value="instrument">악기</option>
                                             <option value="food">음식</option>
