@@ -82,7 +82,7 @@ app.post('/joinRoom', (requset, response) => {
             <script>
                 window.onload = function(){
                     table = document.getElementById("table")
-                    table.innerHTML += ` + tableList +  `
+                    table.innerHTML += `+ tableList +`
                     
                     tr = document.getElementsByClassName("tr")
                     for(let i =0; i<tr.length; i++)
@@ -94,17 +94,44 @@ app.post('/joinRoom', (requset, response) => {
                     }
                 }
             </script>
+            <style>
+                @font-face{
+                        font-family:'Maplestory Light'; /*글꼴*/
+                        src: local('Maplestory Light'),
+                            url('Maplestory Light.eot'),
+                            url('Maplestory Light.woff') format('woff'),
+                            url('Maplestory Light.ttf') format('truetype');
+                    }
+
+                .maple-font{
+                    font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
+                }
+
+                tr{
+                    height: 50px;
+                    border: 1px solid;
+                    border-bottom: 3px solid;
+                }
+
+                td{
+                    font-size: 20px;
+                }
+            </style>
         </head>
-        <body>
-            <table style="border: 1px solid;" id="table">
-                <tr>
-                    <td style = "display:none;" >RoomID</td>
-                    <td>RoomName</td>
-                    <td>Category</td>
-                    <td>Timeout</td>
-                    <td>UserCount</td>
-                </tr>
-            </table>
+        <body class="maple-font">
+            <center>
+                <img src="../title.png" style="width: 400px;">
+                <table style="border: 5px solid; border-collapse: collapse; margin-top: 20px;" id="table">
+                    <tr>
+                        <td style="display: none;">RoomID</td>
+                        <td style = "width: 200px; text-align: center; font-size: 30px;">RoomName</td>
+                        <td style = "width: 200px; text-align: center; font-size: 30px;">Category</td>
+                        <td style = "width: 200px; text-align: center; font-size: 30px;">Timeout</td>
+                        <td style = "width: 200px; text-align: center; font-size: 30px;">userCount</td>
+                    </tr>
+                </table>
+            </center>
+            
         </body>
     </html>`)
 })

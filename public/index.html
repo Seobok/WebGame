@@ -34,6 +34,10 @@
                 GrayCreateRoomBtn.onmouseup = function() {
                     GrayCreateRoomBtn.style.backgroundImage = 'url("GrayCreateRoom.png")'
                 }
+
+                popClose = function() {
+                    document.getElementById("popup_layer").style.display = "none"
+                }
             }
         </script>
         <style>
@@ -53,7 +57,7 @@
                 top:50%;
                 left:50%; 
                 overflow: auto; 
-                height: 528px; 
+                height: 562px; 
                 width:500px;
                 transform:translate(-50%, -100%);
                 z-index:1002;
@@ -76,7 +80,10 @@
 
         <div class = "popup_layer" id="popup_layer" style="display: none;">
             <div class="popup_box">
-                <div id = "words" style="background-image: url('popup_background.jpeg'); background-repeat: no-repeat; background-size: cover;">
+                <div id = "words" style="background-image: url('popup_background.jpeg'); background-repeat: no-repeat; background-size: cover; overflow-x: hidden; overflow-y: hidden;">
+                    <div style="transform:translate(90%, 20%);">
+                        <img src="xMark.png" onclick="popClose()" style="width: 30px; height: 30px;">
+                    </div>
                     <form action="/createRoom" method="post">
                         <center>
                             <table style="text-align: center; font-size: 30px; background-size: cover;">
