@@ -63,9 +63,9 @@ getTableList = function() {
     var tableList ="'";
     for([index, Room] of RoomList.entries())
     {
-        if(Room.isPrivate == "false")
+        if(Room.isPrivate == "false" && Room.isGameStart== false)
         {
-            tableList += '<tr class = "tr"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td>' +Room.category+ '</td><td>' +String(Room.timeout)+ '</td><td>' + Room.nicknames.length+'/4</td></tr>'
+            tableList += '<tr class = "tr"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td><center>' +Room.category+ '</center></td><td><center>' +String(Room.timeout)+ '</center></td><td><center>' + Room.nicknames.length+'/4</center></td></tr>'
         }
     }
     tableList += "'"
@@ -120,7 +120,7 @@ app.post('/joinRoom', (requset, response) => {
         </head>
         <body class="maple-font">
             <center>
-                <img src="../title.png" style="width: 400px;">
+                <img src="../main.png" style="width: 400px;">
                 <table style="border: 5px solid; border-collapse: collapse; margin-top: 20px;" id="table">
                     <tr>
                         <td style="display: none;">RoomID</td>
@@ -172,8 +172,14 @@ io.on('connection', (socket) => {       //접속시
             answer : "",
             round : 0,
             isPrivate: false,
+            isGameStart: false,
         });                                                                     //addNick Map에 roomId 추가
         socket.roomMaster = true;                                               //roomMaster 지정
+    }
+
+    if(RoomList.get(roomId).isGameStart == true)
+    {
+        io.to(userId).emit('GameIsStart')
     }
 
     RoomList.get(roomId).roomName = socket.handshake.query.roomName
@@ -243,6 +249,7 @@ io.on('connection', (socket) => {       //접속시
             RoomList.get(roomId).currnetPlayerIndex = 0
             RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
             io.to(roomId).emit('setBrowser', RoomList.get(roomId).currnetPlayer)    //브라우저 설정 이벤트 호출
+            RoomList.get(roomId).isGameStart = true;
         }
         
     })

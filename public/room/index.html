@@ -58,6 +58,11 @@
                     }
                 });
 
+                socket.on('GameIsStart', ()=>
+                {
+                    window.location.replace('/overcapacity.html')
+                })
+
                 //<!--CSV불러오기-->
                 $.ajax({
                     url: 'wordList.CSV',
