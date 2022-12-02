@@ -15,55 +15,93 @@
             *{
                 font-family: 'Maplestory Light', sans-serif;/*웹 폰트 지정*/
             }
-            .popup_box{
+            .popup_box_clear{
                 background-image: url('wordchoice.jpg');
                 box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
                 border-radius: 35px;
                 overflow: auto; 
-                height: 220px; 
-                width:1200px;
+                height: 500px; 
+                width:500px;
+                font-size: 30px;
             }
-            .popup_box tr{
-                height: 200px;
+            .popup_box_clear tr{
+                height: 80px;
                 padding: 0px;
                 margin: 0px;
             }
-            .popup_box td{
-                width: inherit;
+            .popup_box_clear td{
+                width: 100px;
                 padding: 20px;
                 margin: 20px;
             }
-
-            .word{
-                border: 0;
-                background-image: url('notext.png');
-                background-size: cover;
-                background-color: rgba(0,0,0,0.0);
-                height: 150px;
-                width: 300px;
-                padding: 0px;
-                margin: 0px;
+            .popup_box_clear .Ranking
+            {
+                width: 50px;
+                padding-right: 0px;
+            }
+            .popup_box_clear .popup_player
+            {
+                width: 250px;
             }
         </style>
     </head>
     <body>
         <center>
-            <div class = "popup_layer" id="popup_layer">
-                <div class="popup_box">
+            <div class = "popup_layer_clear" id="popup_layer_clear">
+                <div class="popup_box_clear">
                     <center>
-                        <table style="width:900px; padding: 0px; background-color: rgba(0,0,0,0.0); margin: 0px;">
+                        <div style="margin-top: 20px;"> 게임종료 </div>
+                        <table >
                             <tr>
-                                <td>
-                                    <button class = 'word' style = "font-size: 70px">가</button>
+                                <td class="Ranking">
+                                    1등
+                                </td>
+                                <td class="popup_player">
+                                    플레이어1
                                 </td>
                                 <td>
-                                    <button class = 'word' style = "font-size: 70px">나</button>
+                                    9999
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="Ranking">
+                                    2등
+                                </td>
+                                <td class="popup_player">
+                                    플레이어2
                                 </td>
                                 <td>
-                                    <button class = 'word' style = "font-size: 70px">다</button>
+                                    점수2
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="Ranking">
+                                    3등
+                                </td>
+                                <td class="popup_player">
+                                    플레이어3
+                                </td>
+                                <td>
+                                    점수3
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="Ranking">
+                                    4등
+                                </td>
+                                <td class="popup_player">
+                                    플레이어4
+                                </td>
+                                <td>
+                                    점수4
                                 </td>
                             </tr>
                         </table>
+                        <div style="margin-top: 30px;">
+                            <button>
+                                <img>메인으로
+                            </button>
+                        </div>
                     </center>
                 </div>
             </div>

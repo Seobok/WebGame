@@ -23,7 +23,7 @@ function generateSerial() {     //방 시리얼 넘버 생성
 }
 
 function generateUserNickname(){    //무작위 닉네임 생성
-    var adjective = ['번듯한', '멋진', '화려한', '우울한', '슬픈', '기쁜', '힘든', '포기하고 싶은', '조용한', '시끄러운', '재밌는', '노잼'],
+    var adjective = ['번듯한', '멋진', '화려한', '우울한', '슬픈', '기쁜', '힘든', '포기한', '조용한', '시끄러운', '재밌는', '노잼'],
     noun = ['호랑이', '사자', '인간', '쥐', '나무늘보', '너구리', '바위', '박명수', '토끼', '돼지', '아르마딜로', '사냥꾼', '마법사'],
     randomName="",
     randomNumber;
@@ -65,7 +65,7 @@ getTableList = function() {
     {
         if(Room.isPrivate == "false" && Room.isGameStart== false)
         {
-            tableList += '<tr class = "tr"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td><center>' +Room.category+ '</center></td><td><center>' +String(Room.timeout)+ '</center></td><td><center>' + Room.nicknames.length+'/4</center></td></tr>'
+            tableList += '<tr class = "tr" style = "text-align : center;"><td class = "tdID" style = "display : none;">' + index + '</td><td>' + Room.roomName + '</td><td>' +Room.category+ '</td><td>' +String(Room.timeout)+ '</td><td>' + Room.nicknames.length+'/4</td></tr>'
         }
     }
     tableList += "'"
@@ -224,12 +224,40 @@ io.on('connection', (socket) => {       //접속시
         if(RoomList.get(roomId).currnetPlayerIndex==-1)
         {
             RoomList.get(roomId).round++;
+            if(RoomList.get(roomId).round == 4)
+            {
+                //게임종료
+                var _scoreList = RoomList.get(roomId).userScore
+                var _userList = RoomList.get(roomId).nicknames
+
+                var ansScore = []
+                var ansUser = []
+
+                for(let i = 0; i<_userList.length; i++)
+                {
+                    var maxScore = -1;
+                    var maxScoreIndex = -1;
+
+                    for(let j =0;j<_userList.length; j++)
+                    {
+                        if(maxScore < _scoreList[j])
+                        {
+                            maxScore = _scoreList[j];
+                            maxScoreIndex = j;
+                        }
+                    }
+
+                    ansScore.push(maxScore)
+                    ansUser.push(_userList[maxScoreIndex])
+                    _scoreList[maxScoreIndex] = -1;
+                }
+
+                io.to(roomId).emit("gameClear", ansScore, ansUser)
+
+                return;
+            }
             RoomList.get(roomId).currnetPlayerIndex = RoomList.get(roomId).nicknames.length-1
             io.to(roomId).emit('changeRound', RoomList.get(roomId).round)
-        }
-        if(RoomList.get(roomId).round == 3)
-        {
-            //게임종료
         }
         RoomList.get(roomId).currnetPlayer = RoomList.get(roomId).nicknames[RoomList.get(roomId).currnetPlayerIndex]
         io.to(roomId).emit('next', previousPlayer, RoomList.get(roomId).currnetPlayer)

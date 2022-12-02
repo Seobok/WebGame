@@ -34,6 +34,47 @@
             function closePop() {
                 document.getElementById("popup_layer").style.display = "none";
             }
+
+            function openClearPop(ansScore, ansUser) {
+                
+                console.log(ansScore, ansUser)
+
+                let previousScore = -1;
+                let count = 1;
+
+                let Ranking = document.getElementsByClassName("Ranking")
+                let popup_player = document.getElementsByClassName("popup_player")
+                let popup_score = document.getElementsByClassName("popup_score")
+
+                for(let i = 0; i<ansUser.length; i++)
+                {
+                    if(previousScore == ansScore[i])
+                    {
+                        Ranking[i].innerHTML = count + '등';
+                    }
+                    else
+                    {
+                        Ranking[i].innerHTML = i+1 + '등';
+                        count = i+1;
+                    }
+
+                    previousScore = ansScore[i]
+
+                    popup_player[i].innerHTML = ansUser[i]
+                    popup_score[i].innerHTML = ansScore[i]
+                }
+
+                document.getElementById("popup_layer_clear").style.display = "block";
+            }
+
+            function closeClearPop() {
+                document.getElementById("popup_layer_clear").style.display = "none";
+            }
+
+            function goMain(){
+                closeClearPop();
+                location.replace('/')
+            }
             window.onload = function() {
                 //<!-- 서버 관련 함수 -->
                 params = (new URL(document.location)).searchParams
@@ -359,6 +400,11 @@
                     }                    
                 })
 
+                socket.on('gameClear', (ansScore, ansUser) => {
+                    closePop()
+                    openClearPop(ansScore, ansUser)
+                })
+
                 socket.on('changeCategoryTimeoutList', (_category, _timeout) => {
                     currentCategory = _category;
                     currentTime = _timeout;
@@ -501,7 +547,7 @@
                             </td>
                         </tr>
                     </table>
-                    <div id = 'tool' style="width: 1500px; height: 150px; border-color:black; border-style:solid; margin-top: 30px;">
+                    <div id = 'tool' style="width: 1500px; height: 150px; border-color:black; border-style:solid; margin-top: 30px; display : none;">
                         <table>
                             <td>
                                 <div class = 'palette'></div>
@@ -543,7 +589,7 @@
                                 <div class = 'clear'></div>
                             </td>
                             <td>
-                                <div class = 'size'>
+                                <div class = 'size' style = "display : none;">
                                     <input type='range' min='0.1' max='10.0' value='2' step='0.1' id = 'size_range'>
                                 </div>
                             </td>
@@ -568,6 +614,65 @@
                             </table>
                         </center>
                     </div>
+                </div>
+                <div class = "popup_layer_clear" id="popup_layer_clear" style = "display : none;">
+                    <div class="popup_box_clear">
+                        <center>
+                            <div style="margin-top: 20px;"> 게임종료 </div>
+                            <table >
+                                <tr>
+                                    <td class="Ranking">
+                                        
+                                    </td>
+                                    <td class="popup_player">
+                                        
+                                    </td>
+                                    <td class="popup_score">
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="Ranking">
+                                        
+                                    </td>
+                                    <td class="popup_player">
+                                        
+                                    </td>
+                                    <td class="popup_score">
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="Ranking">
+                                        
+                                    </td>
+                                    <td class="popup_player">
+                                        
+                                    </td>
+                                    <td class="popup_score">
+                                        
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="Ranking">
+                                        
+                                    </td>
+                                    <td class="popup_player">
+                                        
+                                    </td>
+                                    <td class="popup_score">
+                                        
+                                    </td>
+                                </tr>
+                            </table>
+                            <div style="margin-top: 30px;">
+                                <button onclick="goMain()">
+                                    <img>메인으로
+                                </button>
+                            </div>
+                        </center>
+                    </div>
+                </div>
                 </div>`
                     //<!--채팅-->
                     var msgform = document.getElementById('msgform');
@@ -888,6 +993,40 @@
                 width: 300px;
                 padding: 0px;
                 margin: 0px;
+            }
+
+            .popup_box_clear{
+                position: relative;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -150%);
+                z-index: 1002;
+                background-image: url('wordchoice.jpg');
+                box-shadow: 2px 5px 10px 0px rgba(0,0,0,0.35);
+                border-radius: 35px;
+                overflow: auto; 
+                height: 500px; 
+                width:500px;
+                font-size: 30px;
+            }
+            .popup_box_clear tr{
+                height: 80px;
+                padding: 0px;
+                margin: 0px;
+            }
+            .popup_box_clear td{
+                width: 100px;
+                padding: 20px;
+                margin: 20px;
+            }
+            .popup_box_clear .Ranking
+            {
+                width: 50px;
+                padding-right: 0px;
+            }
+            .popup_box_clear .popup_player
+            {
+                width: 250px;
             }
         </style>
     </head>
