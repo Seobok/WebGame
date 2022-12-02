@@ -138,6 +138,10 @@
                     }
                 }
 
+                function handleRangeChange(event) {
+                    draw_width = event.target.value
+                }
+
                 function drawTimer(time, obj){
                     var min, sec;
 
@@ -512,6 +516,11 @@
                             <td>
                                 <div class = 'clear'></div>
                             </td>
+                            <td>
+                                <div class = 'size'>
+                                    <input type='range' min='0.1' max='10.0' value='2' step='0.1' id = 'size_range'>
+                                </div>
+                            </td>
                         </table>
                     </div>
                 </center>
@@ -562,6 +571,11 @@
                             clear_canvas();
                             socket.emit('clear')
                         }
+
+                    size = document.querySelector('.size')
+                    size_range = document.getElementById('size_range')
+                    size_range.addEventListener('input', handleRangeChange)
+                    
 
                     for(let i = 0; i < 11; i++) {
                         palettes[i].onclick = function() {
@@ -740,6 +754,7 @@
                         undo.setAttribute("style", "height: 0px; width: 0px");
                         clear.setAttribute("style", "height: 0px; width: 0px");
                         tool.setAttribute("style", "height: 0px; width: 0px");
+                        size.style.display="none";
 
                         palettes[0].setAttribute("style", "height: 0px; width: 0px;")   
                         palettes[1].setAttribute("style", "height: 0px; width: 0px;")
@@ -770,6 +785,7 @@
                         undo.setAttribute("style", "height: 80px; width: 80px; background-image: url('undo.png'); background-size: cover;")
                         clear.setAttribute("style", "height: 80px; width: 80px; background-image: url('eraser.png'); background-size: cover;")
                         tool.setAttribute("style", "background-color: darkgray; height: 80px; width: 1500px; padding: 15px;")
+                        size.style.display = "block"
                         
                         palettes[0].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: red;")
                         palettes[1].setAttribute("style", "height: 80px; width: 80px; border-radius: 50%; background-color: orange;")
