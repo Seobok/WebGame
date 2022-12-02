@@ -83,7 +83,6 @@ app.post('/joinRoom', (requset, response) => {
                 window.onload = function(){
                     table = document.getElementById("table")
                     table.innerHTML += ` + tableList +  `
-                    console.log(`+ tableList+ `)
                     
                     tr = document.getElementsByClassName("tr")
                     for(let i =0; i<tr.length; i++)
@@ -154,7 +153,6 @@ io.on('connection', (socket) => {       //접속시
     RoomList.get(roomId).category = socket.handshake.query.category
     RoomList.get(roomId).timeout = Number(socket.handshake.query.timeout)
     RoomList.get(roomId).isPrivate = socket.handshake.query.isPrivate
-    console.log(RoomList.get(roomId).isPrivate)
 
     if(socket.roomMaster)
     {
@@ -285,7 +283,10 @@ io.on('connection', (socket) => {       //접속시
     })
 
     socket.on('waitingroomMessage', (msg) => {
-        io.emit('waitingroomMessage', msg);
+        if(msg != '')
+        {            
+            io.emit('waitingroomMessage', socket.nickname + ' : ' + msg);
+        }
     });
 
     socket.on('line', (data) => {

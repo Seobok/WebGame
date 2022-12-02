@@ -223,7 +223,6 @@
 
                             randomNumber = Math.floor(Math.random() * list.length);
                             word = list[randomNumber];
-                            console.log(word);
                             socket.emit('choicedWord', word);
                             socket.emit('wordChoiced')
                             drawTimer(currentTime, timerDiv);
@@ -247,8 +246,7 @@
 
                     userCounter.innerHTML = count + " / 4 ";
                     for(let i =0; i<nick.length;i++) {
-                        nicknames[i].innerHTML = nick[i] 
-                        console.log(this.nickname,  nick[i])
+                        nicknames[i].innerHTML = nick[i]
                         if(this.nickname == nick[i])
                         {
                             nicknames[i].style.border = "5px solid red";
@@ -262,7 +260,6 @@
 
                 socket.on('checkReady', (Ready) => {
                     this.allReady = Ready
-                    console.log(allReady)
                 })
 
                 socket.on('findRoomMaster', (name) => {
@@ -271,40 +268,51 @@
                         roomMaster = true;
 
                     var showButton = document.getElementById('startGame')
+                    var startBackgroundImage = document.getElementById('startBackgroundImage')
 
                     if(roomMaster) {
-                        var newRoomMasterChoiceList = document.getElementById('newRoomMasterChoiceList')
+                        var newRoomMasterChoiceList = document.getElementById('newRoomMasterChoiceList')                        
+                        
                         newRoomMasterChoiceList.innerHTML = `
                         <td>
                             <form id = 'invisibleCategory'>
-                                <p>
-                                    <select onchange="changeCategory(this)" id="category">
-                                        <option value="korean">한글</option>
-                                        <option value="pen">학용품</option>
-                                        <option value="instrument">악기</option>
-                                        <option value="food">음식</option>
-                                        <option value="electronics">전자제품</option>
-                                        <option value="sport">운동</option>
-                                    </select>
-                                </p>
+                                <select onchange="changeCategory(this)" id="category" style="width: 80px; font-size: 20px">
+                                    <option value="korean">한글</option>
+                                    <option value="pen">학용품</option>
+                                    <option value="instrument">악기</option>
+                                    <option value="food">음식</option>
+                                    <option value="electronics">전자제품</option>
+                                    <option value="sport">운동</option>
+                                </select>
                             </form>
                         </td>
                         <td>
                             <form id = 'invisibleTimeout'>
-                                <p>
-                                    <select onchange="changeTimer(this)" id="timeout">
-                                        <option value="30">30초</option>
-                                        <option value="60">1분</option>
-                                        <option value="90">1분30초</option>
-                                        <option value="120">2분</option>
-                                    </select>
-                                </p>
+                                <select onchange="changeTimer(this)" id="timeout" style="width: 80px; font-size: 20px">
+                                    <option value="30">30초</option>
+                                    <option value="60">1분</option>
+                                    <option value="90">1분30초</option>
+                                    <option value="120">2분</option>
+                                </select>
                             </form>
                         </td>`
 
                         socket.emit('newRoomMasterChangeList')
 
-                        showButton.innerHTML = '게임 시작'
+                        startBackgroundImage.src = 'beforestart.png'
+
+                        showButton.onmousedown = function() {
+                            startBackgroundImage.src = 'beforestart.png'
+                            startBackgroundImage.style.width = '200px';
+                            startBackgroundImage.style.height = '53px';
+                        }
+
+                        showButton.onmouseup = function() {
+                            startBackgroundImage.src = 'beforestart.png'
+                            startBackgroundImage.style.width = '300px';
+                            startBackgroundImage.style.height = '80px';
+                        }
+
                         showButton.onclick  = function() {
                             if((currentCategory != 'notChoice') && (currentTime != 0) && (allReady == true)) 
                             {
@@ -314,7 +322,20 @@
                     }
                     else
                     {
-                        showButton.innerHTML = '준 비'
+                        startBackgroundImage.src = 'beforeready.png'
+
+                        showButton.onmousedown = function() {
+                            startBackgroundImage.src = 'beforeready.png'
+                            startBackgroundImage.style.width = '200px';
+                            startBackgroundImage.style.height = '53px';
+                        }
+
+                        showButton.onmouseup = function() {
+                            startBackgroundImage.src = 'beforeready.png'
+                            startBackgroundImage.style.width = '300px';
+                            startBackgroundImage.style.height = '80px';
+                        }
+                        
                         showButton.onclick = function() {
                             if(ready == false)
                             {
@@ -423,7 +444,7 @@
 
                     document.body.innerHTML = `
                     <center>
-                    <table id="ingame" style="border-color:black; border-style:solid; height: 215px; width: 1560px; text-align: center;">
+                    <table id="ingame" style="background-image: url('background10.png'); border-color:black; border-style:solid; height: 215px; width: 1560px; text-align: center;">
                         <tr>
                             <td id = "round" rowspan="2" style="border-color:black; border-style:solid; width: 230px; font-size: 50px;">                                
                             </td>
@@ -465,8 +486,8 @@
                             </td>
                             <td colspan="2" style="border-color:black; border-style:solid;">
                                 <form id = 'msgform'>
-                                    <input id ='msginput' autocomplete = 'off' type='text'>
-                                    <button type = 'submit'>입력</button>    
+                                    <input id ='msginput' autocomplete = 'off' type='text' style = "width: 200px; font-size: 25px">
+                                    <button type = 'submit' style = "display: none;"></button>    
                                 </form>
                             </td>
                         </tr>
@@ -638,11 +659,13 @@
                     var readyArray = document.getElementsByClassName("readyStatus")
                     if(bool)
                     {
-                        readyArray[index-1].innerHTML = "ready";
+                        readyArray[index-1].innerHTML = `
+                        <img src='readystatus.png' style='width: 50px; height: 50px'>` ;
                     }
                     else
                     {
-                        readyArray[index-1].innerHTML = "not ready";
+                        readyArray[index-1].innerHTML = `
+                        <img src='notreadystatus.png' style='width: 50px; height: 50px'>`;
                     }
                 })
 
@@ -655,6 +678,7 @@
                     var messageTag = document.createElement("p");
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
+                    messageList.scrollTop = messageList.scrollHeight;
                 });
 
                 var waitingMsgForm = document.getElementById('waitingMsgForm');
@@ -672,6 +696,7 @@
                     var messageTag = document.createElement("p");
                     messageTag.innerText = msg;
                     messageList.appendChild(messageTag);
+                    messageList.scrollTop = messageList.scrollHeight;
                 });
 
                 socket.on('setWords', (list) => {
@@ -705,7 +730,6 @@
 
                 socket.on('choicedWord2', (choicedWord) => {
                     word = choicedWord;
-                    console.log(word)
                 })
 
                 socket.on('wordChoiced2', () => {
@@ -846,72 +870,66 @@
             }
         </style>
     </head>
-    <body style="padding: 0px; margin: 0px;">
+    <body style="background-image: url('background10.png'); padding: 0px; margin: 0px; background-size: cover;">
         <div><img src="title.png" style="width: 200px; height: 50px;"></div>
         <center>
-            <table style="width:1040px; padding-top: 20px; padding-left: 20px; padding-right: 20px; background-color: white; margin-top: 40px; padding-bottom: 20px;">
+            <table style="width:1040px; padding-top: 20px; padding-left: 20px; padding-right: 20px; margin-top: 40px; padding-bottom: 20px;">
                 <tr>
                     <td style="width: 1px;">
                         <table style="width: 680px; border-color:black; border-style:solid; vertical-align:middle;">
-                            <tr height = "50px" style="background-color: white;">
-                                <td width = "30px"><img src="crown.png" style="width: 30px; height: 30px"></td>
-                                <td class = "nicknames" style="font-size:20px;"></td>
+                            <tr height = "50px">
+                                <td width = "50px"><img src="crown.png" style="width: 30px; height: 30px"></td>
+                                <td class = "nicknames" style="font-size:30px;"></td>
                                 <td style="text-align:right;"></td>
                             </tr>
-                            <tr height = "50px" style="background-color: white;">
+                            <tr height = "50px">
                                 <td></td>
-                                <td class = "nicknames" style="font-size:20px;"></td>
-                                <td class="readyStatus" style="text-align:right;"></td>
+                                <td class = "nicknames" style="font-size:30px;"></td>
+                                <td class="readyStatus" style="text-align:right; font-size:25px;"></td>
                             </tr>
-                            <tr height = "50px" style="background-color: white;">
+                            <tr height = "50px">
                                 <td></td>
-                                <td class = "nicknames" style="font-size:20px;"></td>
-                                <td class="readyStatus" style="text-align:right;"></td>
+                                <td class = "nicknames" style="font-size:30px;"></td>
+                                <td class="readyStatus" style="text-align:right; font-size:25px;"></td>
                             </tr>
-                            <tr height = "50px" style="background-color: white;">
+                            <tr height = "50px">
                                 <td></td>
-                                <td class = "nicknames" style="font-size:20px;"></td>
-                                <td class="readyStatus" style="text-align:right;"></td>
+                                <td class = "nicknames" style="font-size:30px;"></td>
+                                <td class="readyStatus" style="text-align:right; font-size:25px;"></td>
                             </tr>
                         </table>
                     </td>
-                    <td style="background-color:white; width: 20px;">
-                        
-                    </td>
+                    <td style="width: 20px;"></td>
                     <td>
                         <table style="border-color:black; border-style:solid; height: 215px; width: 300px; text-align: center;">
                             <tr>
-                                <td colspan="2" id = 'usercount' style="text-align: right; vertical-align: top; height: 20px;"></td>
+                                <td colspan="2" id = 'usercount' style="text-align: right; vertical-align: top; height: 30px; font-size: 25px; padding-right: 20px;"></td>
                             </tr>
-                            <tr style="vertical-align:bottom;">
+                            <tr style=" font-size: 30px;">
                                 <td>카테고리</td>
                                 <td>시간제한</td>
                             </tr>
                             <tr style="vertical-align:top;" id = "newRoomMasterChoiceList">
                                 <td>
-                                    <form id = 'invisibleCategory'>
-                                        <p>
-                                            <select onchange="changeCategory(this)" id="category">
-                                                <option value="korean">한글</option>
-                                                <option value="pen">학용품</option>
-                                                <option value="instrument">악기</option>
-                                                <option value="food">음식</option>
-                                                <option value="electronics">전자제품</option>
-                                                <option value="sport">운동</option>
-                                            </select>
-                                        </p>
+                                    <form id = 'invisibleCategory' style="font-size: 30px;">
+                                        <select onchange="changeCategory(this)" id="category">
+                                            <option value="korean">한글</option>
+                                            <option value="pen">학용품</option>
+                                            <option value="instrument">악기</option>
+                                            <option value="food">음식</option>
+                                            <option value="electronics">전자제품</option>
+                                            <option value="sport">운동</option>
+                                        </select>
                                     </form>
                                 </td>
                                 <td>
-                                    <form id = 'invisibleTimeout'>
-                                        <p>
-                                            <select onchange="changeTimer(this)" id="timeout">
-                                                <option value="30">30초</option>
-                                                <option value="60">1분</option>
-                                                <option value="90">1분30초</option>
-                                                <option value="120">2분</option>
-                                            </select>
-                                        </p>
+                                    <form id = 'invisibleTimeout' style="font-size: 30px;">
+                                        <select onchange="changeTimer(this)" id="timeout">
+                                            <option value="30">30초</option>
+                                            <option value="60">1분</option>
+                                            <option value="90">1분30초</option>
+                                            <option value="120">2분</option>
+                                        </select>
                                     </form>
                                 </td>
                             </tr>
@@ -921,16 +939,24 @@
                 <tr>
                     <td style="height: 80px;"></td>
                     <td></td>
-                    <td style="text-align:center; vertical-align:middle; border-style: solid;"><button id = 'startGame'></button></td>
+                    <td style="height: 90px;">
+                        <center>
+                            <button id = 'startGame' style="background-color: rgba(0,0,0,0.0); border: 0; margin: 0; padding: 0;">
+                                <center>
+                                    <img id="startBackgroundImage" src='' style="background-size: cover; background-color: rgba(0,0,0,0.0); border: 0; width: 300px; height: 80px;">
+                                </center>
+                            </button>
+                        </center>                        
+                    </td>
                 </tr>
                 <tr style="height: 400px;">
-                    <td colspan="3" style="border-style: solid; vertical-align: top;"><div id = 'waitingMsgs' style = "overflow: auto; width: inherit; height: 380px;"></div></td>
+                    <td colspan="3" style="border-style: solid; vertical-align: top;"><div id = 'waitingMsgs' style="overflow-x: hidden; overflow-y: scroll; height: 380px; width: 1000px; text-align: left;"></div></td>
                 </tr>
                 <tr style = "height: 15px;">
-                    <td colspan="3" style="height: 20px; text-align:center; vertical-align:middle; border-style: solid;">
-                        <form id = 'waitingMsgForm'>
-                            <input id ='waitingMsgInput' autocomplete = 'off' type='text'>
-                            <button type = 'submit'>입력</button>    
+                    <td colspan="3" style="height: 20px; text-align:center; vertical-align: top; border-style:hidden;">
+                        <form id = 'waitingMsgForm' style="float:none;">
+                            <input id ='waitingMsgInput' autocomplete = 'off' type='text' placeholder=" 채팅 입력" style="width: 1000px; height: 30px; font-size: 25px; padding: 0px; margin: 0px;">
+                            <button type = 'submit' style="display: none;">입력</button>    
                         </form>
                     </td>
                 </tr>
