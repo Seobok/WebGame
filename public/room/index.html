@@ -626,9 +626,9 @@
                                     <td class="popup_score"></td>
                                 </tr>
                             </table>
-                            <div style="margin-top: 30px;">
-                                <button onclick="goMain()">
-                                    <img>메인으로
+                            <div>
+                                <button id ='gomain' style="background-color: rgba(0,0,0,0.0); border: 0; margin: 0; padding: 0;">
+                                    <img src='gomain.png' style="background-size: cover; background-color: rgba(0,0,0,0.0); border: 0; width: 100px; height: 100px;">
                                 </button>
                             </div>
                         </center>
@@ -667,6 +667,12 @@
                     size = document.querySelector('.size')
                     size_range = document.getElementById('size_range')
                     size_range.addEventListener('input', handleRangeChange)
+
+                    var gomain = document.getElementById('gomain')
+
+                    gomain.onclick = function() {
+                        goMain();
+                    }
                     
 
                     for(let i = 0; i < 11; i++) {
