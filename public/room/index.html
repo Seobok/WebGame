@@ -208,7 +208,7 @@
 
                         obj.innerHTML =  "남은 시간<br>"  + tm + ":" + ts;
 
-                        if(ts == 0) 
+                        if(time == 0) 
                         {
                             clearInterval(draw_timer)
                             draw_timer = null;
@@ -255,7 +255,7 @@
                             socket.emit('wordChoiced')
                         }
 
-                        if(ts == 0) 
+                        if(time== 0) 
                         {
                             var timerDiv = document.getElementById('timer');
                             closePop();
