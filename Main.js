@@ -346,7 +346,15 @@ io.on('connection', (socket) => {       //접속시
     socket.on('message', (msg, time) => {
         if((msg != "") && (msg == RoomList.get(roomId).answer) && (socket.nickname != RoomList.get(roomId).currnetPlayer))
         {
-            var addScore = Math.floor(time/10)*10;
+            if(time >=10)
+            {
+                var addScore = Math.floor(time/10)*10;
+            }
+            else
+            {
+                var addScore = 10;
+            }
+            
             RoomList.get(roomId).userScore[RoomList.get(roomId).nicknames.indexOf(socket.nickname)] += addScore;   
             
             io.to(roomId).emit('changeScore', RoomList.get(roomId).nicknames, RoomList.get(roomId).userScore)
