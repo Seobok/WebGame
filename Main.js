@@ -106,6 +106,11 @@ app.post('/joinRoom', (requset, response) => {
         <head>
             <script>
                 window.onload = function(){
+                    gohome = document.getElementById('gohome');
+                    gohome.onclick = function(){
+                        location.replace('/')
+                    }
+
                     table = document.getElementById("table")
                     table.innerHTML += `+ tableList +`
                     
@@ -169,7 +174,7 @@ app.post('/joinRoom', (requset, response) => {
         </head>
         <body class="maple-font" style="background-image: url('background10.png'); padding: 0px; margin: 0px; background-size: cover;">
             <center>
-                <img src="../main.png" style="width: 400px;">
+                <img src="../main.png" style="width: 400px;" id="gohome">
                 <table style="border: 5px solid; border-collapse: collapse; margin-top: 20px;" id="table">
                     <tr>
                         <td style="display: none;">RoomID</td>
